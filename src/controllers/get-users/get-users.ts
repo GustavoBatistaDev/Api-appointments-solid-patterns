@@ -1,6 +1,7 @@
 import { HttpResponse } from "controllers/protocols";
-import { IGetUsersController, IGetUsersRepository } from "./protocols";
+import { IGetUsersController} from "./protocols";
 import { User } from "models/user";
+import { IGetUsersRepository } from "../../repositories/get-users/protocols";
 
 export class GetUsersController implements IGetUsersController {
   constructor(private readonly getUsersRepository: IGetUsersRepository) {}
