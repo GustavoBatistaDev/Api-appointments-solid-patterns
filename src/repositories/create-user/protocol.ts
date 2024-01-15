@@ -1,6 +1,7 @@
+import { IUserDTO } from "controllers/create-user/protocols";
 import { User } from "models/user";
 
 export interface ICreateUserRepository{
-    createUser(): Promise<User>
+    createUser(createUserParams: IUserDTO): Promise<User>
 }
 

@@ -1,21 +1,23 @@
-import { HttpResponse } from "controllers/protocols";
+import { HttpRequest, HttpResponse } from "controllers/protocols";
 import { User } from "models/user";
-import { ICreateUserController } from "./protocols";
+import { ICreateUserController, IUserDTO } from "./protocols";
 import { ICreateUserRepository } from "repositories/create-user/protocol";
 
-export class CreateUsersController implements ICreateUserController {
-  constructor(private ICreateUserRepository: ICreateUserRepository) {}
+export class CreateUserController implements ICreateUserController {
+  constructor(private CreateUserRepository: ICreateUserRepository) {}
 
-  async insert(): Promise<HttpResponse<User>> {
+  async handle(HttpRequest: HttpRequest<IUserDTO>): Promise<HttpResponse<User>> {
     try {
-      const result: User = await this.ICreateUserRepository.createUser();
+      const result: User = await this.CreateUserRepository.createUser(
+        HttpRequest.body,
+      );
       return {
-        statusCode: 200,
+        statusCode: 201,
         body: result,
       };
     } catch (error) {
       return {
-        statusCode: 200,
+        statusCode: 500,
         body: "Erro interno do servidor",
       };
     }
