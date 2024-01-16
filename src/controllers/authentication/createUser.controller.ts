@@ -19,6 +19,7 @@ export class CreateUserController implements IController {
     }
 
     const body = await this.createUserService.createUser(httpRequest.body);
+
     return {
       statusCode: 200,
       body,
