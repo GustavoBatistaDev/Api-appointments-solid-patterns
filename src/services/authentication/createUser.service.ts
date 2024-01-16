@@ -1,7 +1,7 @@
-import { ICreateUserService } from "interfaces/services/ICreateUser.service";
-import { ICreateUserRepository } from "interfaces/user/createUser.interface";
+import { ICreateUserService } from "interfaces/services/authentication/ICreateUser.service";
+import { ICreateUserRepository } from "../../interfaces/repositories/authentication/CreateUserRepository.interface";
 import { IUserDTO } from "interfaces/user/userDTO.interface";
-import { User } from "models/user";
+import { User } from "models/authentication/user";
 
 export class CreateUserService implements ICreateUserService {
   constructor(private readonly CreateUserRepository: ICreateUserRepository) {}

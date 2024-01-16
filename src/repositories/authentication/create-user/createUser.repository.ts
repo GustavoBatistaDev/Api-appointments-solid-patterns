@@ -5,9 +5,9 @@ import knexConfig from "../../../database/postgre";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const knex: Knex = require("knex")(knexConfig);
 
-import { ICreateUserRepository } from "interfaces/user/createUser.interface";
+import { ICreateUserRepository } from "interfaces/repositories/authentication/CreateUserRepository.interface";
 import { IUserDTO } from "interfaces/user/userDTO.interface";
-import { User } from "models/user";
+import { User } from "models/authentication/user";
 
 export class CreateUserRepository implements ICreateUserRepository {
   public async createUser(UserDTO: IUserDTO): Promise<User> {

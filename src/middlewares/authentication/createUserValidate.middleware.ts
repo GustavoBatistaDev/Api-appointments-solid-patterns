@@ -1,13 +1,13 @@
 import { Request, Response, NextFunction } from "express";
 import { Schema } from "joi";
-import { ValidationResult } from "types/authentication.types";
+import { ValidationResult } from "types/authentication/authentication.types";
 import { ValidationError } from "joi";
 
 export class CreateUserValidatorMiddleware {
   constructor(private readonly joiSchema: Schema) {}
 
   // Usando uma arrow function para o método validate
-  public validate = async (
+  public validateDataCreateUser = async (
     req: Request,
     res: Response,
     next: NextFunction,

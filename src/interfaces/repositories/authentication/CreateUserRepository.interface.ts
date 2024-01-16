@@ -1,4 +1,4 @@
-import { User } from "aws-sdk/clients/budgets";
+import { User } from "models/authentication/user";
 import { IUserDTO } from "interfaces/user/userDTO.interface";
 
 export interface ICreateUserRepository {
