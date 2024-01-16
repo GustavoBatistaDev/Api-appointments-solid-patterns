@@ -6,7 +6,7 @@ const knex: Knex.Config = {
     host: 'localhost',
     user: 'seu-usuario',
     password: 'sua-senha',
-    database: 'auth',
+    database: 'scheduling_system',
   }
 };
 

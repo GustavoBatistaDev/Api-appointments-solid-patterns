@@ -1,13 +1,9 @@
 import express from "express";
 
-import { EventEmitter } from "events";
-EventEmitter.defaultMaxListeners = 15;
-
 import { config } from "dotenv";
-import { PostgresGetUsersRepository } from "./repositories/get-users/get-users";
-import { GetUsersController } from "./controllers/get-users/get-users";
-import { CreateUserController } from "./controllers/create-user/create-user";
-import { CreateUserRepository } from "./repositories/create-user/create-user";
+import { CreateUserRepository } from "./repositories/authentication/register-user/createUser.repository";
+import { CreateUserService } from "./services/createUser.service";
+import { CreateUserController } from "./controllers/authentication/createUser.controller";
 
 config();
 
@@ -15,24 +11,22 @@ const app = express();
 
 app.use(express.json());
 
-app.get("/users", async (req, res) => {
-  const postgresGetUsersRepository = new PostgresGetUsersRepository();
-  const getUsersController = new GetUsersController(postgresGetUsersRepository);
-
-  const { body, statusCode } = await getUsersController.handle();
-
-  return res.status(statusCode).json(body);
-});
-
-app.post("/users", async (req, res) => {
+app.post("/user/api", async (req, res) => {
   const createUserRepository = new CreateUserRepository();
-  const createUsersController = new CreateUserController(createUserRepository);
+  const createUserService = new CreateUserService(createUserRepository);
+  const createUserController = new CreateUserController(createUserService);
 
-  const { statusCode, body } = await createUsersController.handle({
-    body: req.body,
+  const { body, statusCode } = await createUserController.handle({
+    body: {
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      email: req.body.email,
+      cpf: req.body.cpf,
+      password: req.body.password,
+    },
   });
 
   return res.status(statusCode).json(body);
 });
 
-app.listen(process.env.PORT);
+export default app;
