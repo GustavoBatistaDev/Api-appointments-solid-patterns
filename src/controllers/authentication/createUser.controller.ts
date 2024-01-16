@@ -10,7 +10,7 @@ export class CreateUserController implements IController {
 
   public async handle(
     httpRequest: HttpRequest<IUserDTO>,
-  ): Promise<HttpResponse<User>> {
+  ): Promise<HttpResponse<User | string>> {
     if (!httpRequest.body) {
       return {
         statusCode: 400,

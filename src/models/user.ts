@@ -1,7 +1,7 @@
 export interface User {
   id: number;
-  first_name: string;
-  last_name: string;
+  firsNname: string;
+  lastName: string;
   cpf: string;
   email: string;
   active: boolean;
@@ -11,6 +11,6 @@ export interface User {
   phone: string;
   isAdmin: boolean;
   password: string;
-  created_at: Date;
+  createdAt: Date;
 }
 
