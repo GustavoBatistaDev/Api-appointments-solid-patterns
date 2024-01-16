@@ -6,7 +6,7 @@ import { IUserDTO } from "interfaces/user/userDTO.interface";
 import { User } from "models/authentication/user";
 
 export class CreateUserController implements IController {
-  constructor(private readonly CreateUserService: ICreateUserService) {}
+  constructor(private readonly createUserService: ICreateUserService) {}
 
   public async handle(
     httpRequest: HttpRequest<IUserDTO>,
@@ -18,7 +18,7 @@ export class CreateUserController implements IController {
       };
     }
 
-    const body = await this.CreateUserService.createUser(httpRequest.body);
+    const body = await this.createUserService.createUser(httpRequest.body);
     return {
       statusCode: 200,
       body,
