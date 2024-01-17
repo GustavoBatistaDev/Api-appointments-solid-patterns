@@ -9,6 +9,7 @@ import { CreateUserRepository } from "../../repositories/authentication/create-u
 import { GetUserService } from "../../services/authentication/getUsers.service";
 import { GetUserRepository } from "../../repositories/authentication/get-users/getUsers.repository";
 import { EncryptorPasswordService } from "../../services/authentication/encryptorPassword.service";
+import { SendMailService } from "../../services/global/sendMail.service";
 
 const authRouter = express.Router();
 
@@ -21,6 +22,8 @@ const createUserValidatorMiddleware = new CreateUserValidatorMiddleware(
   getUserService,
 );
 
+const sendMail = new SendMailService();
+
 const encryptorPasswordService = new EncryptorPasswordService();
 
 authRouter.post(
@@ -29,8 +32,14 @@ authRouter.post(
   createUserValidatorMiddleware.validateEmailAndCpfExistsInDB,
   async (req, res) => {
     const createUserRepository = new CreateUserRepository();
-    const createUserService = new CreateUserService(createUserRepository, encryptorPasswordService);
-    const createUserController = new CreateUserController(createUserService);
+    const createUserService = new CreateUserService(
+      createUserRepository,
+      encryptorPasswordService,
+    );
+    const createUserController = new CreateUserController(
+      createUserService,
+      sendMail,
+    );
 
     const { body, statusCode } = await createUserController.handle({
       body: {
