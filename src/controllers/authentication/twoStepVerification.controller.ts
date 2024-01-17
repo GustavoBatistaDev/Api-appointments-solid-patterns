@@ -1,21 +1,35 @@
 import { Request } from "express";
 import { IController } from "interfaces/global/controllers/controllerProtocol.interface";
 import { ObjectResponse } from "../../types/authentication/authentication.types";
+import { IDecodeToken } from "interfaces/authentication/decodeToken.interface";
+import { payLoadJwt } from "../../types/authentication/payloadJwt.types";
+import { IActivateUser } from "../../interfaces/authentication/activateUser.interface";
 
 export class TwoStepVerificationController implements IController {
+  constructor(
+    private readonly DecodeTokenService: IDecodeToken,
+    private readonly activateUserService: IActivateUser,
+  ) {}
+
   public async handle(httpRequest: Request): Promise<ObjectResponse> {
-    if (!httpRequest.query) {
+    const queryToken = httpRequest.query.token as string;
+
+    const decoded = this.DecodeTokenService.decodeToken(
+      queryToken,
+    ) as payLoadJwt;
+
+    if (decoded === null) {
       return {
         statusCode: 400,
-        body: "Query is required.",
+        body: "Token expirado ou inválido.",
       };
     }
 
-    console.log(httpRequest.query);
+    await this.activateUserService.activateUser(decoded.userId);
 
     return {
       statusCode: 200,
-      body: "",
+      body: "Conta ativada com sucesso.",
     };
   }
 }

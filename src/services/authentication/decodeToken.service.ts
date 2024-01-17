@@ -12,12 +12,7 @@ export class DecodeTokenService implements IDecodeToken {
 
       const decoded = jwt.verify(token, secretyKey);
 
-      if (
-        decoded &&
-        typeof decoded === "object" &&
-        "exp" in decoded &&
-        "iat" in decoded
-      ) {
+      if (decoded && typeof decoded === "object" && "exp" in decoded) {
         return decoded;
       }
 

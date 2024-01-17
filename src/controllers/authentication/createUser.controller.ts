@@ -34,12 +34,12 @@ export class CreateUserController implements IController {
     }
 
     const token = this.createTokenJwt.createToken(
-      { userId: body.id },
+      {
+        userId: body.id,
+        exp: Math.floor(Date.now() / 1000) + 3600 * 60,
+      },
       secretKeyJwt,
-      "8h",
     );
-
-    console.log(token);
 
     this.sendMailService.sendMessage(
       body.email,

@@ -1,3 +1,4 @@
-export type payLoadJwt= {
-    userId: number;
+export type payLoadJwt = {
+  userId: number;
+  exp: number;
 };

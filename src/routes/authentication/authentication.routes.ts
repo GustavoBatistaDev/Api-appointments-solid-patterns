@@ -5,13 +5,18 @@ import { CreateUserValidatorMiddleware } from "../../middlewares/authentication/
 import { userSchema } from "../../schemas/authentication/user.schema";
 import { CreateUserController } from "../../controllers/authentication/createUser.controller";
 import { CreateUserService } from "../../services/authentication/createUser.service";
-import { CreateUserRepository } from "../../repositories/authentication/create-user/createUser.repository";
+import { CreateUserRepository } from "../../repositories/authentication/createUser.repository";
 import { GetUserService } from "../../services/authentication/getUsers.service";
-import { GetUserRepository } from "../../repositories/authentication/get-users/getUsers.repository";
+import { GetUserRepository } from "../../repositories/authentication/getUsers.repository";
 import { EncryptorPasswordService } from "../../services/authentication/encryptorPassword.service";
 import { SendMailService } from "../../services/global/sendMail.service";
 import { Request, Response } from "express";
-import { CreateTokenJwt } from "../../services/authentication/createTokenJwt.service";
+import { CreateTokenJwtService } from "../../services/authentication/createTokenJwt.service";
+import { TwoStepVerificationController } from "../../controllers/authentication/twoStepVerification.controller";
+import { DecodeTokenService } from "../../services/authentication/decodeToken.service";
+
+import { ActivateUserService } from "../../services/authentication/activateUser.service";
+import { ActivateUserRepository } from "../../repositories/authentication/activateUser.repository";
 
 const authRouter = express.Router();
 
@@ -28,7 +33,7 @@ const sendMail = new SendMailService();
 
 const encryptorPasswordService = new EncryptorPasswordService();
 
-const createTokenJwt = new CreateTokenJwt();
+const createTokenJwt = new CreateTokenJwtService();
 
 authRouter.post(
   "/user/api",
@@ -52,6 +57,19 @@ authRouter.post(
   },
 );
 
+authRouter.get("/verify-email", async (req: Request, res: Response) => {
+  const decodeTokenService = new DecodeTokenService();
 
+  const activateUserRepository = new ActivateUserRepository();
+  const activateUserService = new ActivateUserService(activateUserRepository);
+
+  const twoStepVerificationController = new TwoStepVerificationController(
+    decodeTokenService,
+    activateUserService,
+  );
+  const { statusCode, body } = await twoStepVerificationController.handle(req);
+
+  return res.status(statusCode).json(body);
+});
 
 export default authRouter;
