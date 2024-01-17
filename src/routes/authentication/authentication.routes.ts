@@ -10,6 +10,8 @@ import { GetUserService } from "../../services/authentication/getUsers.service";
 import { GetUserRepository } from "../../repositories/authentication/get-users/getUsers.repository";
 import { EncryptorPasswordService } from "../../services/authentication/encryptorPassword.service";
 import { SendMailService } from "../../services/global/sendMail.service";
+import { Request, Response } from "express";
+import { CreateTokenJwt } from "../../services/authentication/createTokenJwt.service";
 
 const authRouter = express.Router();
 
@@ -26,11 +28,13 @@ const sendMail = new SendMailService();
 
 const encryptorPasswordService = new EncryptorPasswordService();
 
+const createTokenJwt = new CreateTokenJwt();
+
 authRouter.post(
   "/user/api",
   createUserValidatorMiddleware.validateDataCreateUser,
   createUserValidatorMiddleware.validateEmailAndCpfExistsInDB,
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const createUserRepository = new CreateUserRepository();
     const createUserService = new CreateUserService(
       createUserRepository,
@@ -39,20 +43,15 @@ authRouter.post(
     const createUserController = new CreateUserController(
       createUserService,
       sendMail,
+      createTokenJwt,
     );
 
-    const { body, statusCode } = await createUserController.handle({
-      body: {
-        firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        email: req.body.email,
-        cpf: req.body.cpf,
-        password: req.body.password,
-      },
-    });
+    const { body, statusCode } = await createUserController.handle(req);
 
     return res.status(statusCode).json(body);
   },
 );
+
+
 
 export default authRouter;

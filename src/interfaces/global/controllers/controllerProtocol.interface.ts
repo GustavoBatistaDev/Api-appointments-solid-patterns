@@ -1,6 +1,6 @@
-import { HttpRequest } from "../http/httpRequest.interface";
-import { HttpResponse } from "../http/httpResponse.interface";
+import { Request } from "express";
+import { ObjectResponse } from "../../../types/authentication/authentication.types";
 
 export interface IController {
-  handle(httpRequest: HttpRequest<unknown>): Promise<HttpResponse<unknown>>;
+  handle(httpRequest: Request): Promise<ObjectResponse<unknown>>;
 }
