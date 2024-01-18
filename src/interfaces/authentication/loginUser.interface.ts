@@ -1,3 +1,9 @@
-import { ILoginUser } from "../repositories/authentication/loginUser.interface";
+import { User } from "../../models/authentication/user";
 
-export interface LoginUserService extends ILoginUser {}
+export interface ILoginUserService {
+  authenticate(
+    email: string,
+    password: string,
+    hashPassword: string,
+  ): Promise<User | null>;
+}

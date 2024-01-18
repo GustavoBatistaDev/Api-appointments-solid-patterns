@@ -1,17 +1,35 @@
+import bcrypt from "bcrypt";
+
 import { Knex } from "knex";
 import { DatabaseSingleton } from "../../database/databaseSingleton";
-import { User } from "models/authentication/user";
-import { ILoginUser } from "../../interfaces/repositories/authentication/loginUser.interface";
+import { User } from "../../models/authentication/user";
+import { ILoginUserRepository } from "../../interfaces/repositories/authentication/loginUser.interface";
 
 const knexInstance: Knex = DatabaseSingleton.getInstance();
 
-export class LoginUserRepository implements ILoginUser {
-  public async authenticate(email: string, password: string): Promise<boolean> {
-    const userExists: User = await knexInstance("users")
-      .where({ email, password })
+export class LoginUserRepository implements ILoginUserRepository {
+  public async authenticate(
+    email: string,
+    password: string,
+    hashPassword: string,
+  ): Promise<User | null> {
+    const user: User | null = await this.getUserByEmail(email);
+    if (user) {
+      const passwordIsValid = await bcrypt.compareSync(password, hashPassword);
+      if (passwordIsValid) {
+        return user;
+      } else {
+        return null;
+      }
+    }
+    return null;
+  }
+
+  public async getUserByEmail(email: string): Promise<User | null> {
+    const user = await knexInstance("users")
+      .where({ email: email })
       .select("*")
       .first();
-
-    return userExists ? true : false;
+    return user;
   }
 }

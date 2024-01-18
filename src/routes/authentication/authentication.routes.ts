@@ -17,6 +17,10 @@ import { DecodeTokenService } from "../../services/authentication/decodeToken.se
 
 import { ActivateUserService } from "../../services/authentication/activateUser.service";
 import { ActivateUserRepository } from "../../repositories/authentication/activateUser.repository";
+import { LoginUserRepository } from "../../repositories/authentication/loginUser.repository";
+import { LoginUserService } from "../../services/authentication/loginUser.service";
+import { LoginUserController } from "../../controllers/authentication/loginUser.controller";
+import { ComparePasswordService } from "../../services/authentication/comparePassword.service";
 
 const authRouter = express.Router();
 
@@ -69,6 +73,22 @@ authRouter.get("/verify-email", async (req: Request, res: Response) => {
   );
   const { statusCode, body } = await twoStepVerificationController.handle(req);
 
+  return res.status(statusCode).json(body);
+});
+
+authRouter.post("/login", async (req: Request, res: Response) => {
+  const loginUserRepository = new LoginUserRepository();
+  const createTokenJwt = new CreateTokenJwtService();
+  const loginUserService = new LoginUserService(
+    loginUserRepository,
+    createTokenJwt,
+  );
+  const comparePassword = new ComparePasswordService();
+  const loginUserController = new LoginUserController(
+    loginUserService,
+    comparePassword,
+  );
+  const { body, statusCode } = await loginUserController.handle(req);
   return res.status(statusCode).json(body);
 });
 
