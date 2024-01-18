@@ -1,5 +1,5 @@
 import { JwtPayload } from "jsonwebtoken";
 
-export interface IDecodeToken {
+export interface IDecodeTokenService {
   decodeToken(token: string): JwtPayload | null;
 }

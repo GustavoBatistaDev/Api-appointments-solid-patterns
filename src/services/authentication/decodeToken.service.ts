@@ -1,7 +1,7 @@
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { IDecodeToken } from "../../interfaces/authentication/decodeToken.interface";
+import { IDecodeTokenService } from "../../interfaces/authentication/decodeToken.interface";
 
-export class DecodeTokenService implements IDecodeToken {
+export class DecodeTokenService implements IDecodeTokenService {
   public decodeToken(token: string): JwtPayload | null {
     try {
       const secretyKey = process.env.JWT_SECRETY_KEY;

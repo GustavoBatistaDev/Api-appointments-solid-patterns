@@ -10,7 +10,6 @@ export class CreateUserValidatorMiddleware {
     private readonly getUserService: IGetUserService,
   ) {}
 
-  // Usando uma arrow function para o método validate
   public validateDataCreateUser = async (
     req: Request,
     res: Response,

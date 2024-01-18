@@ -1,14 +1,14 @@
 import { Request } from "express";
 import { IController } from "interfaces/global/controllers/controllerProtocol.interface";
 import { ObjectResponse } from "../../types/authentication/authentication.types";
-import { IDecodeToken } from "interfaces/authentication/decodeToken.interface";
+import { IDecodeTokenService } from "interfaces/authentication/decodeToken.interface";
 import { payLoadJwt } from "../../types/authentication/payloadJwt.types";
-import { IActivateUser } from "../../interfaces/authentication/activateUser.interface";
+import { IActivateUserService } from "../../interfaces/authentication/activateUser.interface";
 
 export class TwoStepVerificationController implements IController {
   constructor(
-    private readonly DecodeTokenService: IDecodeToken,
-    private readonly activateUserService: IActivateUser,
+    private readonly DecodeTokenService: IDecodeTokenService,
+    private readonly activateUserService: IActivateUserService,
   ) {}
 
   public async handle(httpRequest: Request): Promise<ObjectResponse> {

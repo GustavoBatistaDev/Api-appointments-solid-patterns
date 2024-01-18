@@ -1,9 +1,8 @@
 import { Knex } from "knex";
 
-import knexConfig from "../../database/postgre";
+import { DatabaseSingleton } from "../../database/databaseSingleton";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const knex: Knex = require("knex")(knexConfig);
+const knexInstance: Knex = DatabaseSingleton.getInstance();
 
 import { ICreateUserRepository } from "interfaces/repositories/authentication/createUserRepository.interface";
 import { IUserDTO } from "interfaces/user/userDTO.interface";
@@ -11,7 +10,7 @@ import { User } from "../../models/authentication/user";
 
 export class CreateUserRepository implements ICreateUserRepository {
   public async createUser(userDTO: IUserDTO): Promise<User> {
-    const user: User = await knex("users")
+    const user: User = await knexInstance("users")
       .insert({
         first_name: userDTO.firstName,
         last_name: userDTO.lastName,

@@ -1,18 +1,18 @@
 import { IController } from "interfaces/global/controllers/controllerProtocol.interface";
 import { IsendMail } from "../../interfaces/global/email/sendMail.interface";
 
-import { ICreateUserService } from "interfaces/services/authentication/ICreateUser.service";
+import { ICreateUserService } from "interfaces/services/authentication/ICreateUser.interface";
 
 import { User } from "models/authentication/user";
 import { Request } from "express";
 import { ObjectResponse } from "../../types/authentication/authentication.types";
-import { ICreateTokenJwt } from "interfaces/authentication/createToken.interface";
+import { ICreateTokenJwtService } from "interfaces/authentication/createToken.interface";
 
 export class CreateUserController implements IController {
   constructor(
     private readonly createUserService: ICreateUserService,
     private readonly sendMailService: IsendMail,
-    private readonly createTokenJwt: ICreateTokenJwt,
+    private readonly createTokenJwtService: ICreateTokenJwtService,
   ) {}
 
   public async handle(httpRequest: Request): Promise<ObjectResponse<User>> {
@@ -33,7 +33,7 @@ export class CreateUserController implements IController {
       throw new Error("Chave secreta não definida");
     }
 
-    const token = this.createTokenJwt.createToken(
+    const token = this.createTokenJwtService.createToken(
       {
         userId: body.id,
         exp: Math.floor(Date.now() / 1000) + 3600 * 60,
