@@ -1,4 +1,4 @@
-import { User } from "models/authentication/user";
+import { User } from "../../../models/authentication/user";
 
 export interface ILoginUserRepository {
   authenticate(

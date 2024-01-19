@@ -20,7 +20,8 @@ import { ActivateUserRepository } from "../../repositories/authentication/activa
 import { LoginUserRepository } from "../../repositories/authentication/loginUser.repository";
 import { LoginUserService } from "../../services/authentication/loginUser.service";
 import { LoginUserController } from "../../controllers/authentication/loginUser.controller";
-import { ComparePasswordService } from "../../services/authentication/comparePassword.service";
+import { LoginUserValidatorMiddleware } from "../../middlewares/authentication/loginUserValidate.middleware";
+import { loginSchema } from "../../schemas/authentication/login.schema";
 
 const authRouter = express.Router();
 
@@ -61,6 +62,8 @@ authRouter.post(
   },
 );
 
+// Verificação de duas etapas
+
 authRouter.get("/verify-email", async (req: Request, res: Response) => {
   const decodeTokenService = new DecodeTokenService();
 
@@ -76,18 +79,17 @@ authRouter.get("/verify-email", async (req: Request, res: Response) => {
   return res.status(statusCode).json(body);
 });
 
-authRouter.post("/login", async (req: Request, res: Response) => {
-  const loginUserRepository = new LoginUserRepository();
-  const createTokenJwt = new CreateTokenJwtService();
-  const loginUserService = new LoginUserService(
-    loginUserRepository,
-    createTokenJwt,
-  );
-  const comparePassword = new ComparePasswordService();
-  const loginUserController = new LoginUserController(
-    loginUserService,
-    comparePassword,
-  );
+// Login
+const loginUserRepository = new LoginUserRepository();
+
+const loginUserService = new LoginUserService(
+  loginUserRepository,
+  createTokenJwt,
+);
+const loginUserValidatorMiddleware = new LoginUserValidatorMiddleware(loginUserService, loginSchema);
+
+authRouter.post("/login", loginUserValidatorMiddleware.validateDataLoginUser, async (req: Request, res: Response) => {
+  const loginUserController = new LoginUserController(loginUserService);
   const { body, statusCode } = await loginUserController.handle(req);
   return res.status(statusCode).json(body);
 });
