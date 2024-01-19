@@ -15,11 +15,12 @@ export class LoginUserRepository implements ILoginUserRepository {
   ): Promise<User | null> {
     const user: User | null = await this.getUserByEmail(email);
     if (user) {
-      const passwordIsValid = await bcrypt.compareSync(password, hashPassword);
+      const passwordIsValid: boolean = await bcrypt.compareSync(
+        password,
+        hashPassword,
+      );
       if (passwordIsValid) {
         return user;
-      } else {
-        return null;
       }
     }
     return null;

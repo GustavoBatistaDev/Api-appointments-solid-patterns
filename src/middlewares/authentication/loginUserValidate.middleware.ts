@@ -7,8 +7,6 @@ import { Schema } from "joi";
 import { Request } from "../../interfaces/http/httpRequest.interface";
 import { ILoginUserService } from "../../interfaces/authentication/loginUser.interface";
 
-// Interface personalizada estendendo o tipo Request
-
 export class LoginUserValidatorMiddleware {
   constructor(
     private readonly loginUserService: ILoginUserService,
@@ -27,6 +25,11 @@ export class LoginUserValidatorMiddleware {
         await this.loginUserService.getUserByEmail(email);
 
       if (user) {
+        if (!user?.active) {
+          return res.status(400).json({
+            message: "Você precisa verificar seu email antes de fazer login.",
+          });
+        }
         const userAuthenticated: null | User =
           await this.loginUserService.authenticate(
             email,
@@ -35,10 +38,8 @@ export class LoginUserValidatorMiddleware {
           );
 
         if (userAuthenticated) {
-          // Você também pode adicionar o usuário autenticado à requisição se necessário
           req.user = userAuthenticated;
 
-          // Chama o próximo middleware na cadeia
           next();
           return;
         }
