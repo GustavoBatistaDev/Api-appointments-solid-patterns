@@ -2,12 +2,15 @@
 
 import express from "express";
 import { CreateUserValidatorMiddleware } from "../../middlewares/authentication/createUserValidate.middleware";
-import { userSchema } from "../../schemas/authentication/user.schema";
+import { registerSchema } from "../../schemas/authentication/register.schema";
 import { CreateUserController } from "../../controllers/authentication/createUser.controller";
 import { CreateUserService } from "../../services/authentication/createUser.service";
 import { CreateUserRepository } from "../../repositories/authentication/createUser.repository";
 import { GetUserService } from "../../services/authentication/getUsers.service";
-import { GetUserRepository } from "../../repositories/authentication/getUsers.repository";
+import {
+  GetUserByIdRepository,
+  GetUserRepository,
+} from "../../repositories/authentication/getUsers.repository";
 import { EncryptorPasswordService } from "../../services/authentication/encryptorPassword.service";
 import { SendMailService } from "../../services/global/sendMail.service";
 import { Request, Response } from "express";
@@ -22,6 +25,8 @@ import { LoginUserService } from "../../services/authentication/loginUser.servic
 import { LoginUserController } from "../../controllers/authentication/loginUser.controller";
 import { LoginUserValidatorMiddleware } from "../../middlewares/authentication/loginUserValidate.middleware";
 import { loginSchema } from "../../schemas/authentication/login.schema";
+import { VerifyLoggedUserMiddleware } from "../../middlewares/authentication/verifyLoggedUser.middleware";
+import { GetUserByIdService } from "../../services/global/getUserById.service";
 
 const authRouter = express.Router();
 
@@ -30,7 +35,7 @@ const getUserRepository = new GetUserRepository();
 const getUserService = new GetUserService(getUserRepository);
 
 const createUserValidatorMiddleware = new CreateUserValidatorMiddleware(
-  userSchema,
+  registerSchema,
   getUserService,
 );
 
@@ -41,7 +46,7 @@ const encryptorPasswordService = new EncryptorPasswordService();
 const createTokenJwt = new CreateTokenJwtService();
 
 authRouter.post(
-  "/user/api",
+  "/user",
   createUserValidatorMiddleware.validateDataCreateUser,
   createUserValidatorMiddleware.validateEmailAndCpfExistsInDB,
   async (req: Request, res: Response) => {
@@ -86,12 +91,41 @@ const loginUserService = new LoginUserService(
   loginUserRepository,
   createTokenJwt,
 );
-const loginUserValidatorMiddleware = new LoginUserValidatorMiddleware(loginUserService, loginSchema);
+const loginUserValidatorMiddleware = new LoginUserValidatorMiddleware(
+  loginUserService,
+  loginSchema,
+);
 
-authRouter.post("/login", loginUserValidatorMiddleware.validateDataLoginUser, async (req: Request, res: Response) => {
-  const loginUserController = new LoginUserController(loginUserService);
-  const { body, statusCode } = await loginUserController.handle(req);
-  return res.status(statusCode).json(body);
-});
+authRouter.post(
+  "/login",
+  loginUserValidatorMiddleware.validateDataLoginUser,
+  async (req: Request, res: Response) => {
+    const loginUserController = new LoginUserController(loginUserService);
+    const { body, statusCode } = await loginUserController.handle(req);
+    return res.status(statusCode).json(body);
+  },
+);
+
+// Profile
+
+const decodeTokenService = new DecodeTokenService();
+
+const getUserByIdRepository = new GetUserByIdRepository();
+
+const getUserByIdService = new GetUserByIdService(getUserByIdRepository);
+
+const verifyLoggedUserMiddleware = new VerifyLoggedUserMiddleware(
+  decodeTokenService,
+  getUserByIdService,
+);
+
+authRouter.get(
+  "/profile",
+  verifyLoggedUserMiddleware.verifyLoggedUser,
+
+  async (req: Request, res: Response) => {
+    return res.send("profile");
+  },
+);
 
 export default authRouter;

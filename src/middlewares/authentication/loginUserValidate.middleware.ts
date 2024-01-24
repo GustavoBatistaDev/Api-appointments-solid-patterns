@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express";
-import { ValidationResult } from "types/authentication/authentication.types";
+import { ValidationResult } from "../../types/authentication/authentication.types";
 import { ValidationError } from "joi";
 
 import { User } from "../../models/authentication/user";
@@ -20,12 +20,12 @@ export class LoginUserValidatorMiddleware {
   ): Promise<ValidationResult> => {
     try {
       await this.loginSchema.validateAsync(req.body);
-      const { email, password } = req.body;
+      const { email, senha } = req.body;
       const user: User | null =
         await this.loginUserService.getUserByEmail(email);
 
       if (user) {
-        if (!user?.active) {
+        if (!user?.ativo) {
           return res.status(400).json({
             message: "Você precisa verificar seu email antes de fazer login.",
           });
@@ -33,8 +33,8 @@ export class LoginUserValidatorMiddleware {
         const userAuthenticated: null | User =
           await this.loginUserService.authenticate(
             email,
-            password,
-            user.password,
+            senha,
+            user.senha,
           );
 
         if (userAuthenticated) {

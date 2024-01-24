@@ -1,11 +1,11 @@
 export interface IUserDTO {
-  firstName: string;
-  lastName: string;
+  nome: string;
+  ultimo_nome: string;
   cpf: string;
   email: string;
-  photo?: string;
+  foto?: string;
   rg?: string;
-  dateOfBirth?: string;
-  phone?: string;
-  password: string;
+  data_nascimento?: string;
+  numero_celular?: string;
+  senha: string;
 }

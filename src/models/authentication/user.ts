@@ -1,16 +1,14 @@
 export interface User {
   id: number;
-  firstName: string;
-  lastName: string;
+  nome: string;
+  ultimo_nome: string;
   cpf: string;
   email: string;
-  active: boolean;
-  photo: string;
+  ativo: boolean;
+  foto: string;
   rg: string;
-  dateOfBirth: string;
-  phone: string;
-  isAdmin: boolean;
-  password: string;
-  createdAt: Date;
+  data_nascimento: string;
+  numero_celular: string;
+  senha: string;
+  criado_em: Date;
 }
-

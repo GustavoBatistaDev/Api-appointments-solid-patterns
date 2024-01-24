@@ -3,7 +3,7 @@ import { IGetUserRepository } from "../../interfaces/repositories/authentication
 import { User } from "models/authentication/user";
 import { IGetUserByIdRepository } from "interfaces/repositories/users/getUserById.interface";
 import { Knex } from "knex";
-import { DatabaseSingleton } from "../../database/databaseSingleton";
+import { DatabaseSingleton } from "../../infra/database/databaseSingleton";
 
 const knexInstance: Knex = DatabaseSingleton.getInstance();
 
@@ -12,7 +12,7 @@ export class GetUserRepository implements IGetUserRepository {
     cpf: string,
     email: string,
   ): Promise<boolean> {
-    const userExists = await knexInstance("users")
+    const userExists = await knexInstance("pacientes")
       .where({ email: email })
       .orWhere({ cpf: cpf })
       .select("*");
@@ -23,7 +23,7 @@ export class GetUserRepository implements IGetUserRepository {
 
 export class GetUserByIdRepository implements IGetUserByIdRepository {
   async getUserByid(ìd: number): Promise<User> {
-    const user: User = await knexInstance("users")
+    const user: User = await knexInstance("pacientes")
       .where({ id: ìd })
       .then((result: User[]) => result[0]);
     return user;

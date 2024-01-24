@@ -1,6 +1,6 @@
 import { Knex } from "knex";
 
-import { DatabaseSingleton } from "../../database/databaseSingleton";
+import { DatabaseSingleton } from "../../infra/database/databaseSingleton";
 
 const knexInstance: Knex = DatabaseSingleton.getInstance();
 
@@ -10,15 +10,15 @@ import { User } from "../../models/authentication/user";
 
 export class CreateUserRepository implements ICreateUserRepository {
   public async createUser(userDTO: IUserDTO): Promise<User> {
-    const user: User = await knexInstance("users")
+    const user: User = await knexInstance("pacientes")
       .insert({
-        first_name: userDTO.firstName,
-        last_name: userDTO.lastName,
+        nome: userDTO.nome,
+        ultimo_nome: userDTO.ultimo_nome,
         email: userDTO.email,
         cpf: userDTO.cpf,
-        password: userDTO.password,
+        senha: userDTO.senha,
       })
-      .returning(["id", "first_name", "last_name", "cpf", "email"])
+      .returning("*")
       .then((result: User[]) => result[0]);
 
     return user;

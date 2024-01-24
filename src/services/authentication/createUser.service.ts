@@ -9,8 +9,8 @@ export class CreateUserService {
     private readonly EncryptorPasswordService: IEncryptorPasswordService,
   ) {}
   public async createUser(UserDTO: IUserDTO): Promise<User> {
-    UserDTO.password = await this.EncryptorPasswordService.encryptorPassword(
-      UserDTO.password,
+    UserDTO.senha = await this.EncryptorPasswordService.encryptorPassword(
+      UserDTO.senha,
     );
 
     const user = await this.createUserRepository.createUser(UserDTO);

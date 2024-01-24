@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 
 import { Knex } from "knex";
-import { DatabaseSingleton } from "../../database/databaseSingleton";
+import { DatabaseSingleton } from "../../infra/database/databaseSingleton";
 import { User } from "../../models/authentication/user";
 import { ILoginUserRepository } from "../../interfaces/repositories/authentication/loginUser.interface";
 
@@ -27,7 +27,7 @@ export class LoginUserRepository implements ILoginUserRepository {
   }
 
   public async getUserByEmail(email: string): Promise<User | null> {
-    const user = await knexInstance("users")
+    const user = await knexInstance("pacientes")
       .where({ email: email })
       .select("*")
       .first();

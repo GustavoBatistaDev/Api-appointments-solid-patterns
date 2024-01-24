@@ -5,8 +5,8 @@ export const loginSchema = Joi.object({
     "string.email": "O campo email deve ser um endereço de e-mail válido.",
     "any.required": "O campo email é obrigatório.",
   }),
-  password: Joi.string().min(6).required().messages({
-    "string.min": "O campo password deve ter pelo menos 6 caracteres.",
-    "any.required": "O campo password é obrigatório.",
+  senha: Joi.string().min(6).required().messages({
+    "string.min": "O campo senha deve ter pelo menos 6 caracteres.",
+    "any.required": "O campo senha é obrigatório.",
   }),
 });

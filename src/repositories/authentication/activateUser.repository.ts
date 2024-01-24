@@ -2,12 +2,12 @@ import { IActivateUserRepository } from "../../interfaces/authentication/activat
 
 import { Knex } from "knex";
 
-import { DatabaseSingleton } from "../../database/databaseSingleton";
+import { DatabaseSingleton } from "../../infra/database/databaseSingleton";
 
 const knexInstance: Knex = DatabaseSingleton.getInstance();
 
 export class ActivateUserRepository implements IActivateUserRepository {
   public async activateUser(id: number): Promise<void> {
-    await knexInstance("users").update({ active: true }).where({ id });
+    await knexInstance("pacientes").update({ ativo: true }).where({ id });
   }
 }

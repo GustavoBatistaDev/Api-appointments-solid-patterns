@@ -7,6 +7,7 @@ import { User } from "models/authentication/user";
 import { Request } from "express";
 import { ObjectResponse } from "../../types/authentication/authentication.types";
 import { ICreateTokenJwtService } from "interfaces/authentication/createToken.interface";
+import { KafkaSendMessage } from "../../infra/providers/kafka/producer";
 
 export class CreateUserController implements IController {
   constructor(
@@ -33,20 +34,15 @@ export class CreateUserController implements IController {
       throw new Error("Chave secreta não definida");
     }
 
-    const token = this.createTokenJwtService.createToken(
-      {
+    const kafkaProducer = new KafkaSendMessage();
+
+    kafkaProducer.execute("notification-email", {
+      email: body.email,
+      payloadJwt: {
         userId: body.id,
         exp: Math.floor(Date.now() / 1000) + 3600 * 60,
       },
-      secretKeyJwt,
-    );
-
-    this.sendMailService.sendMessage(
-      body.email,
-      "Ativação de conta",
-      `${process.env.SERVER_EXPRESS_PROTOCOL}://${process.env.SERVER_EXPRESS_HOST}:${process.env.SERVER_EXPRESS_PORT}/verify-email?token=${token}`,
-    );
-
+    });
     return {
       statusCode: 200,
       body,
