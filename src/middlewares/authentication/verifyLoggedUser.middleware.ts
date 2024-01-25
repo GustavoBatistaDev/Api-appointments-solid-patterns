@@ -25,9 +25,9 @@ export class VerifyLoggedUserMiddleware {
           const user: User = await this.getUserByIdService.getUser(
             tokenDecoded.userId,
           );
-          console.log(tokenDecoded.userId);
 
           if (user) {
+            req.user = user;
             next();
             return;
           }

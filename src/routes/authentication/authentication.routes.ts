@@ -34,6 +34,11 @@ import { ValidateAlterPasswordMiddleware } from "../../middlewares/authenticatio
 import { UpdatePasswordService } from "../../services/authentication/updatePassword.service";
 import { UpdatePasswordRepository } from "../../repositories/authentication/updatePassword.repository";
 import { AlterPassworController } from "../../controllers/authentication/alterPassword.controller";
+import { ValidateUpdateProfileMiddleware } from "../../middlewares/users/validadeUpdateProfile.middleware";
+import { profileSchema } from "../../schemas/authentication/profile.schema";
+import { UpdateUserRepository } from "../../repositories/users/updateUser.repository";
+import { UpdateUserService } from "../../services/users/updateUser.service";
+import { UpdateProfileController } from "../../controllers/users/updateProfile.controller";
 
 const authRouter = express.Router();
 
@@ -100,7 +105,7 @@ const loginUserValidatorMiddleware = new LoginUserValidatorMiddleware(
   loginSchema,
 );
 
-authRouter.post(
+authRouter.put(
   "/login",
   loginUserValidatorMiddleware.validateDataLoginUser,
   async (req: Request, res: Response) => {
@@ -118,6 +123,10 @@ const getUserByIdRepository = new GetUserByIdRepository();
 
 const getUserByIdService = new GetUserByIdService(getUserByIdRepository);
 
+const validateUpdateProfile = new ValidateUpdateProfileMiddleware(
+  profileSchema,
+);
+
 const verifyLoggedUserMiddleware = new VerifyLoggedUserMiddleware(
   decodeTokenService,
   getUserByIdService,
@@ -126,9 +135,16 @@ const verifyLoggedUserMiddleware = new VerifyLoggedUserMiddleware(
 authRouter.get(
   "/profile",
   verifyLoggedUserMiddleware.verifyLoggedUser,
+  validateUpdateProfile.validateUpdateProfile,
 
   async (req: Request, res: Response) => {
-    return res.send("profile");
+    const updateUserRepository = new UpdateUserRepository();
+    const updateUserService = new UpdateUserService(updateUserRepository);
+    const updateProfileController = new UpdateProfileController(
+      updateUserService,
+    );
+    const { statusCode, body } = await updateProfileController.handle(req, res);
+    return res.status(statusCode).json(body);
   },
 );
 
