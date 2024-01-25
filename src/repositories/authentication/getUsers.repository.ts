@@ -8,6 +8,13 @@ import { DatabaseSingleton } from "../../infra/database/databaseSingleton";
 const knexInstance: Knex = DatabaseSingleton.getInstance();
 
 export class GetUserRepository implements IGetUserRepository {
+  public async getUserByEmail(email: string): Promise<User | null> {
+    const user = await knexInstance("pacientes")
+      .where({ email: email })
+      .select("*")
+      .first();
+    return user;
+  }
   public async getUserByCpfOrEmail(
     cpf: string,
     email: string,
@@ -16,7 +23,7 @@ export class GetUserRepository implements IGetUserRepository {
       .where({ email: email })
       .orWhere({ cpf: cpf })
       .select("*");
-
+    console.log(userExists);
     return userExists.length > 0 ? true : false;
   }
 }

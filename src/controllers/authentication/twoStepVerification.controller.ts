@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { Request, Response } from "express";
 import { IController } from "interfaces/global/controllers/controllerProtocol.interface";
 import { ObjectResponse } from "../../types/authentication/authentication.types";
 import { IDecodeTokenService } from "interfaces/authentication/decodeToken.interface";
@@ -11,7 +11,8 @@ export class TwoStepVerificationController implements IController {
     private readonly activateUserService: IActivateUserService,
   ) {}
 
-  public async handle(httpRequest: Request): Promise<ObjectResponse> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public async handle(httpRequest: Request, httpResponse: Response): Promise<ObjectResponse> {
     const queryToken = httpRequest.query.token as string;
 
     const decoded = this.DecodeTokenService.decodeToken(

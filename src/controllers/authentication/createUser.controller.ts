@@ -1,22 +1,21 @@
 import { IController } from "interfaces/global/controllers/controllerProtocol.interface";
-import { IsendMail } from "../../interfaces/global/email/sendMail.interface";
 
 import { ICreateUserService } from "interfaces/services/authentication/ICreateUser.interface";
 
 import { User } from "models/authentication/user";
-import { Request } from "express";
+import { Request, Response } from "express";
 import { ObjectResponse } from "../../types/authentication/authentication.types";
-import { ICreateTokenJwtService } from "interfaces/authentication/createToken.interface";
+
 import { KafkaSendMessage } from "../../infra/providers/kafka/producer";
 
 export class CreateUserController implements IController {
-  constructor(
-    private readonly createUserService: ICreateUserService,
-    private readonly sendMailService: IsendMail,
-    private readonly createTokenJwtService: ICreateTokenJwtService,
-  ) {}
+  constructor(private readonly createUserService: ICreateUserService) {}
 
-  public async handle(httpRequest: Request): Promise<ObjectResponse<User>> {
+  public async handle(
+    httpRequest: Request,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    httpResponse: Response,
+  ): Promise<ObjectResponse<User>> {
     if (!httpRequest.body) {
       return {
         statusCode: 400,
@@ -38,6 +37,7 @@ export class CreateUserController implements IController {
 
     kafkaProducer.execute("notification-email", {
       email: body.email,
+      url: "/api/verify-email",
       payloadJwt: {
         userId: body.id,
         exp: Math.floor(Date.now() / 1000) + 3600 * 60,

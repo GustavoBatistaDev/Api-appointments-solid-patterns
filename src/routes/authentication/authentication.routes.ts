@@ -12,7 +12,7 @@ import {
   GetUserRepository,
 } from "../../repositories/authentication/getUsers.repository";
 import { EncryptorPasswordService } from "../../services/authentication/encryptorPassword.service";
-import { SendMailService } from "../../services/global/sendMail.service";
+
 import { Request, Response } from "express";
 import { CreateTokenJwtService } from "../../services/authentication/createTokenJwt.service";
 import { TwoStepVerificationController } from "../../controllers/authentication/twoStepVerification.controller";
@@ -27,6 +27,13 @@ import { LoginUserValidatorMiddleware } from "../../middlewares/authentication/l
 import { loginSchema } from "../../schemas/authentication/login.schema";
 import { VerifyLoggedUserMiddleware } from "../../middlewares/authentication/verifyLoggedUser.middleware";
 import { GetUserByIdService } from "../../services/global/getUserById.service";
+import { ValidateEmailChangePasswordMiddleware } from "../../middlewares/authentication/validateEmailRecoverPassword.middleware";
+import { recoverPasswordSchema } from "../../schemas/authentication/email.schema";
+import { ChangePassworController } from "../../controllers/authentication/changePassword.controller";
+import { ValidateAlterPasswordMiddleware } from "../../middlewares/authentication/validateAlterPassword.middleware";
+import { UpdatePasswordService } from "../../services/authentication/updatePassword.service";
+import { UpdatePasswordRepository } from "../../repositories/authentication/updatePassword.repository";
+import { AlterPassworController } from "../../controllers/authentication/alterPassword.controller";
 
 const authRouter = express.Router();
 
@@ -38,8 +45,6 @@ const createUserValidatorMiddleware = new CreateUserValidatorMiddleware(
   registerSchema,
   getUserService,
 );
-
-const sendMail = new SendMailService();
 
 const encryptorPasswordService = new EncryptorPasswordService();
 
@@ -55,13 +60,9 @@ authRouter.post(
       createUserRepository,
       encryptorPasswordService,
     );
-    const createUserController = new CreateUserController(
-      createUserService,
-      sendMail,
-      createTokenJwt,
-    );
+    const createUserController = new CreateUserController(createUserService);
 
-    const { body, statusCode } = await createUserController.handle(req);
+    const { body, statusCode } = await createUserController.handle(req, res);
 
     return res.status(statusCode).json(body);
   },
@@ -79,7 +80,10 @@ authRouter.get("/verify-email", async (req: Request, res: Response) => {
     decodeTokenService,
     activateUserService,
   );
-  const { statusCode, body } = await twoStepVerificationController.handle(req);
+  const { statusCode, body } = await twoStepVerificationController.handle(
+    req,
+    res,
+  );
 
   return res.status(statusCode).json(body);
 });
@@ -125,6 +129,59 @@ authRouter.get(
 
   async (req: Request, res: Response) => {
     return res.send("profile");
+  },
+);
+
+// change password
+
+const validateEmailChangePasswordMiddleware =
+  new ValidateEmailChangePasswordMiddleware(
+    recoverPasswordSchema,
+    getUserService,
+  );
+
+authRouter.post(
+  "/change-password",
+  validateEmailChangePasswordMiddleware.validateEmailRecoverPassword,
+  async (req: Request, res: Response) => {
+    const changePasswordController = new ChangePassworController(
+      getUserService,
+    );
+    const { statusCode, body } = await changePasswordController.handle(
+      req,
+      res,
+    );
+    return res.status(statusCode).json(body);
+  },
+);
+
+// alter password
+
+const validateAlterPasswordMiddleware = new ValidateAlterPasswordMiddleware(
+  getUserByIdService,
+  decodeTokenService,
+);
+
+authRouter.post(
+  "/alter-password/:token",
+  validateAlterPasswordMiddleware.validateEmailRecoverPassword,
+  validateAlterPasswordMiddleware.validatePasswords,
+
+  async (req, res) => {
+    const updatePasswordRepository = new UpdatePasswordRepository();
+    const updatePasswordService = new UpdatePasswordService(
+      updatePasswordRepository,
+    );
+
+    const encryptorPassword = new EncryptorPasswordService();
+
+    const alterPassworController = new AlterPassworController(
+      updatePasswordService,
+      encryptorPassword,
+    );
+
+    const { statusCode, body } = await alterPassworController.handle(req, res);
+    return res.status(statusCode).json(body);
   },
 );
 
