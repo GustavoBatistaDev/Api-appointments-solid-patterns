@@ -2,6 +2,8 @@ import { IController } from "interfaces/global/controllers/controllerProtocol.in
 
 import { Request, Response } from "express";
 
+import * as schedule from "node-schedule";
+
 import { ObjectResponse } from "../../types/authentication/authentication.types";
 
 import { KafkaSendMessage } from "../../infra/providers/kafka/producer";
@@ -10,6 +12,8 @@ import { ICreateAppointmentService } from "../../interfaces/services/appointment
 import { GetDoctorBySpecialtyService } from "../../services/appointments/getDoctorsBySpecialty.service";
 import { DataAppointmentDTO } from "../../types/appointments/appointmentDTO.types";
 import { IGetAppointmentsService } from "../../interfaces/services/appointments/getAppointments.interface";
+import { formatDate } from "../../utils/formatDate.utils";
+import { parseDateTime } from "../../utils/parseDateTime.utils";
 
 export class CreateAppointmentController implements IController {
   constructor(
@@ -42,28 +46,26 @@ export class CreateAppointmentController implements IController {
         appointmentCreated.id as number,
       );
 
-    const addLeadingZero = (value: number): string =>
-      value < 10 ? `0${value}` : `${value}`;
+    const datePostgres = new Date(appointmendJoined.dia);
 
-    // Function to format the date
-    const formatDate = (date: Date): string => {
-      const day = addLeadingZero(date.getDate());
-      const month = addLeadingZero(date.getMonth() + 1); // Months in JavaScript are zero-based
-      const year = date.getFullYear();
-      const hours = addLeadingZero(date.getHours());
-      const minutes = addLeadingZero(date.getMinutes());
-      const seconds = addLeadingZero(date.getSeconds());
+    const formattedDate = formatDate(datePostgres);
 
-      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-    };
-
-    // Usage
-    const dataDoPostgres = new Date("2024-02-13T00:00:00.000Z");
-    const formattedDate = formatDate(dataDoPostgres);
     const kafkaProducer = new KafkaSendMessage();
     kafkaProducer.execute("notification-whatsapp", {
       phone: httpResponse.locals.user.numero_celular.trim(),
       message: `Olá, Sr(a) ${httpResponse.locals.user.nome} ${httpResponse.locals.user.ultimo_nome}. Informamos que o seu atendimento está confirmado para a data ${formattedDate}, às ${appointmendJoined.horas}h com Dr(a) ${appointmendJoined.nomeDoutor} na Unidade +SaudeClinic em Eunápolis. Por gentileza, chegar 30 min antes do horário com a carteira do convênio, (caso particular o valor a consulta) RG, CPF. Lembramos que enviaremos um lembrete 1 dia antes da consulta. Até lá.`,
+    });
+
+    const DateAppointment = parseDateTime({
+      day: body.dia,
+      hour: appointmendJoined.horas,
+    });
+
+    schedule.scheduleJob(DateAppointment, () => {
+      kafkaProducer.execute("notification-whatsapp", {
+        phone: httpResponse.locals.user.numero_celular.trim(),
+        message: `Olá, Sr(a) ${httpResponse.locals.user.nome} ${httpResponse.locals.user.ultimo_nome}. Estou aqui para lembrá-lo(a) da sua consulta com o ${appointmendJoined.nomeEspecialidade} amanhã às ${appointmendJoined.horas}h com Dr(a) ${appointmendJoined.nomeDoutor}.`,
+      });
     });
 
     return {
