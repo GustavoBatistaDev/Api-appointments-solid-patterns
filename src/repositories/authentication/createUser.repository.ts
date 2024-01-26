@@ -5,7 +5,7 @@ import { DatabaseSingleton } from "../../infra/database/databaseSingleton";
 const knexInstance: Knex = DatabaseSingleton.getInstance();
 
 import { ICreateUserRepository } from "interfaces/repositories/authentication/createUserRepository.interface";
-import { IUserDTO } from "interfaces/users/userDTO.interface";
+import { IUserDTO } from "types/users/userDTO.types";
 import { User } from "../../models/authentication/user";
 
 export class CreateUserRepository implements ICreateUserRepository {

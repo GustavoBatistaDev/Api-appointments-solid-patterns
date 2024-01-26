@@ -39,6 +39,16 @@ import { profileSchema } from "../../schemas/authentication/profile.schema";
 import { UpdateUserRepository } from "../../repositories/users/updateUser.repository";
 import { UpdateUserService } from "../../services/users/updateUser.service";
 import { UpdateProfileController } from "../../controllers/users/updateProfile.controller";
+import { CreateAppointmentValidatorMiddleware } from "../../middlewares/appointments/validateAppointment.middleware";
+import { appointmentSchema } from "../../schemas/authentication/scheduling.schema";
+import { CreateAppointmentController } from "../../controllers/appointments/createAppointment.controller";
+import { CreateAppointmentService } from "../../services/appointments/createAppointment.service";
+import { CreateAppointmentRepository } from "../../repositories/appointments/createAppointment.repository";
+import { GetDoctorBySpecialtyService } from "../../services/appointments/getDoctorsBySpecialty.service";
+import { GetDoctorBySpecialtyRepository } from "../../repositories/appointments/getDoctorsBySpecialty.repository";
+import { GetAppointmentsService } from "../../services/appointments/getAppointments.services";
+import { GetAppointmentsRepository } from "../../repositories/appointments/getAppointments.repository";
+import { ValidateProfileCompletedMiddleware } from "../../middlewares/users/validateProfileCompleted.middleware";
 
 const authRouter = express.Router();
 
@@ -105,7 +115,7 @@ const loginUserValidatorMiddleware = new LoginUserValidatorMiddleware(
   loginSchema,
 );
 
-authRouter.put(
+authRouter.post(
   "/login",
   loginUserValidatorMiddleware.validateDataLoginUser,
   async (req: Request, res: Response) => {
@@ -132,7 +142,7 @@ const verifyLoggedUserMiddleware = new VerifyLoggedUserMiddleware(
   getUserByIdService,
 );
 
-authRouter.get(
+authRouter.put(
   "/profile",
   verifyLoggedUserMiddleware.verifyLoggedUser,
   validateUpdateProfile.validateUpdateProfile,
@@ -197,6 +207,74 @@ authRouter.post(
     );
 
     const { statusCode, body } = await alterPassworController.handle(req, res);
+    return res.status(statusCode).json(body);
+  },
+);
+
+// Appointments
+
+const getAppointmentsRepository = new GetAppointmentsRepository();
+const getAppointmentsService = new GetAppointmentsService(
+  getAppointmentsRepository,
+);
+
+const getDoctorBySpecialtyRepository = new GetDoctorBySpecialtyRepository();
+const getDoctorBySpecialtyService = new GetDoctorBySpecialtyService(
+  getDoctorBySpecialtyRepository,
+);
+
+const createAppointmentValidatorMiddleware =
+  new CreateAppointmentValidatorMiddleware(
+    appointmentSchema,
+    getAppointmentsService,
+    getDoctorBySpecialtyService,
+  );
+
+const getUserByIdRepositoryProfile = new GetUserByIdRepository();
+const getUserByIdServiceProfile = new GetUserByIdService(
+  getUserByIdRepositoryProfile,
+);
+
+const decodeTokenServiceProfile = new DecodeTokenService();
+const validateProfileCompletedMiddleware =
+  new ValidateProfileCompletedMiddleware(
+    decodeTokenServiceProfile,
+    getUserByIdServiceProfile,
+  );
+
+authRouter.post(
+  "/agendamentos",
+  verifyLoggedUserMiddleware.verifyLoggedUser,
+  validateProfileCompletedMiddleware.validateUpdateProfile,
+  createAppointmentValidatorMiddleware.validateDataCreateAppointment,
+  async (req: Request, res: Response) => {
+    const createAppointmentRepository = new CreateAppointmentRepository();
+    const createAppointmentService = new CreateAppointmentService(
+      createAppointmentRepository,
+    );
+
+    const getDoctorsBySpecialtyRepository =
+      new GetDoctorBySpecialtyRepository();
+    const getDoctorsBySpecialtyService = new GetDoctorBySpecialtyService(
+      getDoctorsBySpecialtyRepository,
+    );
+
+    const getAppointmentsRepository = new GetAppointmentsRepository();
+
+    const getAppointmentService = new GetAppointmentsService(
+      getAppointmentsRepository,
+    );
+
+    const createAppointmentController = new CreateAppointmentController(
+      createAppointmentService,
+      getDoctorsBySpecialtyService,
+      getAppointmentService,
+    );
+
+    const { statusCode, body } = await createAppointmentController.handle(
+      req,
+      res,
+    );
     return res.status(statusCode).json(body);
   },
 );

@@ -15,7 +15,7 @@ export class UpdateProfileController implements IController {
     try {
       const body = httpRequest.body;
 
-      const user = httpRequest.user as User;
+      const user = httpResponse.locals.user as User;
       await this.updateUserService.updateUser(user.id, body);
 
       return {

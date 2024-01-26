@@ -49,17 +49,17 @@ export const profileSchema = Joi.object({
       "any.required": "O campo RG é obrigatório.",
     }),
   data_nascimento: Joi.string()
-    .regex(/^\d{2}\/\d{2}\/\d{4}$/)
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
     .required()
     .messages({
       "string.pattern.base":
-        "O formato da data de nascimento deve ser DD/MM/AAAA",
+        "O formato da data de nascimento deve ser AAAA-MM-DD",
     }),
   numero_celular: Joi.string()
-    .regex(/^\(\d{2}\) \d{5}-\d{4}$/)
+    .regex(/^\d{11}$/) // Permitir apenas 11 dígitos numéricos
     .required()
     .messages({
       "string.pattern.base":
-        "O formato do número de celular deve ser (DD) 12345-6789",
+        "O número de celular deve conter exatamente 11 dígitos numéricos",
     }),
 });

@@ -1,4 +1,4 @@
-export interface IUserDTO {
+export type IUserDTO = {
   nome: string;
   ultimo_nome: string;
   cpf: string;
@@ -8,4 +8,4 @@ export interface IUserDTO {
   data_nascimento?: string;
   numero_celular?: string;
   senha: string;
-}
+};

@@ -27,7 +27,7 @@ export class VerifyLoggedUserMiddleware {
           );
 
           if (user) {
-            req.user = user;
+            res.locals.user = user;
             next();
             return;
           }
