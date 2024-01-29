@@ -1,1 +1,1 @@
-![image](https://github.com/GustavoBatistaDev/microservice-kafka-appointments/assets/102866009/0fd938f5-6a3f-4544-a1c6-13ca3cc1b3d0)
+![image](https://github.com/GustavoBatistaDev/microservice-kafka-appointments/assets/102866009/51f1c03f-76e6-4e2c-8449-153c39781a29)
