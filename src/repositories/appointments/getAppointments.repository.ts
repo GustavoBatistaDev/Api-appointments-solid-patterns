@@ -1,8 +1,14 @@
 import { Knex } from "knex";
 
 import { DatabaseSingleton } from "../../infra/database/databaseSingleton";
-import { DataAppointmentDTO, DataJoinnedAppointment } from "../../types/appointments/appointmentDTO.types";
-import { IGetAppointmentsRepository } from "../../interfaces/repositories/appointments/getAppointments.interface";
+import {
+  DataAppointmentDTO,
+  DataJoinnedAppointment,
+} from "../../types/appointments/appointmentDTO.types";
+import {
+  IGetAppointmentsFromPatientRepository,
+  IGetAppointmentsRepository,
+} from "../../interfaces/repositories/appointments/getAppointments.interface";
 
 const knexInstance: Knex = DatabaseSingleton.getInstance();
 
@@ -42,6 +48,35 @@ export class GetAppointmentsRepository implements IGetAppointmentsRepository {
       )
       .join("pacientes", "agendamentos.pacientes_id", "=", "pacientes.id")
       .first();
+
+    return appointment;
+  }
+}
+
+export class GetAppointmentsFromPatientRepository
+  implements IGetAppointmentsFromPatientRepository
+{
+  public async getAppointmentsFromPatient(
+    pacientId: number,
+  ): Promise<DataJoinnedAppointment[]> {
+    const appointment: DataJoinnedAppointment[] = await knexInstance(
+      "agendamentos",
+    )
+      .select(
+        "agendamentos.*",
+        "pacientes.nome as nomePaciente",
+        "doutores.nome as nomeDoutor",
+        "especialidades.nome as nomeEspecialidade",
+      )
+      .where("agendamentos.pacientes_id", pacientId)
+      .join("doutores", "agendamentos.doutores_id", "=", "doutores.id")
+      .join(
+        "especialidades",
+        "agendamentos.especialidades_id",
+        "=",
+        "especialidades.id",
+      )
+      .join("pacientes", "agendamentos.pacientes_id", "=", "pacientes.id");
 
     return appointment;
   }

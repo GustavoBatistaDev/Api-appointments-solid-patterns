@@ -15,6 +15,7 @@ export class UpdateUserRepository implements IUpdateUserRepository {
           ...dataUser,
         });
     } catch (error) {
+      console.log(error);
       throw new Error("Falha ao atualizar o perfil do usuário.");
     }
   }

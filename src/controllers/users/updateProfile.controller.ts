@@ -4,9 +4,14 @@ import { IController } from "../../interfaces/global/controllers/controllerProto
 import { IUpdateUserService } from "../../interfaces/users/updateUser.service";
 import { ObjectResponse } from "../../types/authentication/authentication.types";
 import { User } from "../../models/authentication/user";
+import { UploadUserPhotoService } from "../../services/upload/upload.services";
 
 export class UpdateProfileController implements IController {
-  constructor(private readonly updateUserService: IUpdateUserService) {}
+  constructor(
+    private readonly updateUserService: IUpdateUserService,
+    private readonly uploadUserPhotoService: UploadUserPhotoService,
+    
+  ) {}
   public async handle(
     httpRequest: Request,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -14,8 +19,25 @@ export class UpdateProfileController implements IController {
   ): Promise<ObjectResponse<unknown>> {
     try {
       const body = httpRequest.body;
-
+      const { file } = httpRequest;
       const user = httpResponse.locals.user as User;
+
+      if (!file) {
+        return {
+          statusCode: 400,
+          body: "Erro na atualização do perfil. Tente novamente",
+        };
+      }
+
+      const pathPhoto = await this.uploadUserPhotoService.handleUpload(
+        process.env.BACKBLAZE_BUCKET as string,
+        `pacientes/${file.originalname}`,
+        file.buffer,
+        file.mimetype,
+      );
+
+      body.foto = pathPhoto;
+
       await this.updateUserService.updateUser(user.id, body);
 
       return {

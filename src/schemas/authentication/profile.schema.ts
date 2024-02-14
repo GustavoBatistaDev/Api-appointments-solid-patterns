@@ -35,9 +35,7 @@ export const profileSchema = Joi.object({
         "O campo cpf deve seguir o formato xxx.xxx.xxx-xx.",
       "any.required": "O campo cpf é obrigatório.",
     }),
-  foto: Joi.string().required().messages({
-    "any.required": "O campo foto é obrigatório.",
-  }),
+
   rg: Joi.string()
     .length(10)
     .pattern(/^[0-9]+$/)

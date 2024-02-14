@@ -9,3 +9,7 @@ export interface IGetAppointmentsRepository {
 
   getAppointmentById(appointmentId: number): Promise<DataJoinnedAppointment>;
 }
+
+export interface IGetAppointmentsFromPatientRepository {
+  getAppointmentsFromPatient(patientId: number): Promise<DataJoinnedAppointment[]>;
+}

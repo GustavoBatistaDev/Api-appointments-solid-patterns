@@ -13,27 +13,51 @@ export class CreateAppointmentValidatorMiddleware {
     private readonly getDoctorBySpecialtyService: GetDoctorBySpecialtyService,
   ) {}
 
-  public validateDataCreateAppointment = async (
+  public validateAppointment = async (
     req: Request,
     res: Response,
     next: NextFunction,
   ): Promise<ValidationResult> => {
     try {
+      const { id } = req.params;
+
+      if (id) {
+        if (isNaN(Number(id))) {
+          return res.status(400).json({
+            message: "Id precisa ser numérico.",
+          });
+        }
+        const appointment =
+          await this.getAppointmentsService.getAppointmentById(Number(id));
+
+        if (!appointment) {
+          return res.status(400).json({
+            message: "Não existe um agendamento para o id informado.",
+          });
+        }
+      }
+
       await this.joiSchema.validateAsync(req.body);
 
+      if (this.validateDateIsValid(req.body.dia)) {
+        console.log(this.validateDateIsValid(req.body.dia));
+        return res.status(400).json({
+          message: "Escolha uma data futura.",
+        });
+      }
       const doctor: DoctorObject =
         await this.getDoctorBySpecialtyService.getDoctorsBySpecialty(
           req.body.especialidades_id,
         );
 
-      const appointmentsExists =
+      const appointmentsAlreadyExists =
         await this.getAppointmentsService.getAppointmentByHourAndDoctorAndDate(
           req.body.dia,
           req.body.horas,
           doctor.id,
         );
 
-      if (!appointmentsExists) {
+      if (!appointmentsAlreadyExists) {
         next();
         return;
       }
@@ -48,5 +72,12 @@ export class CreateAppointmentValidatorMiddleware {
         });
       }
     }
+  };
+
+  public validateDateIsValid = (date: string) => {
+    const currentDate: Date = new Date();
+    const objectDate = new Date(date);
+
+    return objectDate.getTime() < currentDate.getTime();
   };
 }

@@ -1,5 +1,3 @@
-// routes.ts
-
 import express from "express";
 import { CreateUserValidatorMiddleware } from "../../middlewares/authentication/createUserValidate.middleware";
 import { registerSchema } from "../../schemas/authentication/register.schema";
@@ -41,14 +39,28 @@ import { UpdateUserService } from "../../services/users/updateUser.service";
 import { UpdateProfileController } from "../../controllers/users/updateProfile.controller";
 import { CreateAppointmentValidatorMiddleware } from "../../middlewares/appointments/validateAppointment.middleware";
 import { appointmentSchema } from "../../schemas/authentication/scheduling.schema";
-import { CreateAppointmentController } from "../../controllers/appointments/createAppointment.controller";
+import {
+  CreateAppointmentController,
+  GetAppointmentsController,
+  RescheduleAppointmentController,
+} from "../../controllers/appointments/appointments.controller";
 import { CreateAppointmentService } from "../../services/appointments/createAppointment.service";
 import { CreateAppointmentRepository } from "../../repositories/appointments/createAppointment.repository";
 import { GetDoctorBySpecialtyService } from "../../services/appointments/getDoctorsBySpecialty.service";
 import { GetDoctorBySpecialtyRepository } from "../../repositories/appointments/getDoctorsBySpecialty.repository";
-import { GetAppointmentsService } from "../../services/appointments/getAppointments.services";
-import { GetAppointmentsRepository } from "../../repositories/appointments/getAppointments.repository";
+import {
+  GetAppointmentsFromPatientService,
+  GetAppointmentsService,
+} from "../../services/appointments/getAppointments.service";
+import {
+  GetAppointmentsFromPatientRepository,
+  GetAppointmentsRepository,
+} from "../../repositories/appointments/getAppointments.repository";
 import { ValidateProfileCompletedMiddleware } from "../../middlewares/users/validateProfileCompleted.middleware";
+import { RescheduleAppointmentRepository } from "../../repositories/appointments/rescheduleAppointment.repository";
+import { RescheduleAppointmentService } from "../../services/appointments/rescheduleAppointment.service";
+import multer from "../../multer/multer";
+import { UploadUserPhotoService } from "../../services/upload/upload.services";
 
 const authRouter = express.Router();
 
@@ -135,6 +147,7 @@ const getUserByIdService = new GetUserByIdService(getUserByIdRepository);
 
 const validateUpdateProfile = new ValidateUpdateProfileMiddleware(
   profileSchema,
+  getUserService,
 );
 
 const verifyLoggedUserMiddleware = new VerifyLoggedUserMiddleware(
@@ -144,14 +157,20 @@ const verifyLoggedUserMiddleware = new VerifyLoggedUserMiddleware(
 
 authRouter.put(
   "/profile",
+  multer.single("foto"),
   verifyLoggedUserMiddleware.verifyLoggedUser,
   validateUpdateProfile.validateUpdateProfile,
 
   async (req: Request, res: Response) => {
+    const uploadUserPhotoService = new UploadUserPhotoService();
     const updateUserRepository = new UpdateUserRepository();
-    const updateUserService = new UpdateUserService(updateUserRepository);
+    const updateUserService = new UpdateUserService(
+      updateUserRepository,
+      encryptorPasswordService,
+    );
     const updateProfileController = new UpdateProfileController(
       updateUserService,
+      uploadUserPhotoService,
     );
     const { statusCode, body } = await updateProfileController.handle(req, res);
     return res.status(statusCode).json(body);
@@ -246,7 +265,7 @@ authRouter.post(
   "/agendamentos",
   verifyLoggedUserMiddleware.verifyLoggedUser,
   validateProfileCompletedMiddleware.validateUpdateProfile,
-  createAppointmentValidatorMiddleware.validateDataCreateAppointment,
+  createAppointmentValidatorMiddleware.validateAppointment,
   async (req: Request, res: Response) => {
     const createAppointmentRepository = new CreateAppointmentRepository();
     const createAppointmentService = new CreateAppointmentService(
@@ -272,6 +291,56 @@ authRouter.post(
     );
 
     const { statusCode, body } = await createAppointmentController.handle(
+      req,
+      res,
+    );
+    return res.status(statusCode).json(body);
+  },
+);
+
+authRouter.put(
+  "/agendamentos/:id",
+  verifyLoggedUserMiddleware.verifyLoggedUser,
+  validateProfileCompletedMiddleware.validateUpdateProfile,
+  createAppointmentValidatorMiddleware.validateAppointment,
+  async (req: Request, res: Response) => {
+    const rescheduleAppointmentRepository =
+      new RescheduleAppointmentRepository();
+
+    const rescheduleAppointmentService = new RescheduleAppointmentService(
+      rescheduleAppointmentRepository,
+    );
+
+    const rescheduleAppointmentController = new RescheduleAppointmentController(
+      rescheduleAppointmentService,
+      getAppointmentsService,
+      getDoctorBySpecialtyService,
+    );
+
+    const { statusCode, body } = await rescheduleAppointmentController.handle(
+      req,
+      res,
+    );
+
+    return res.status(statusCode).json(body);
+  },
+);
+
+authRouter.get(
+  "/agendamentos",
+  verifyLoggedUserMiddleware.verifyLoggedUser,
+  async (req, res) => {
+    const getAppointmentsFromPatientRepository =
+      new GetAppointmentsFromPatientRepository();
+    const getAppointmentsFromPatientService =
+      new GetAppointmentsFromPatientService(
+        getAppointmentsFromPatientRepository,
+      );
+    const getAppointmentsController = new GetAppointmentsController(
+      getAppointmentsFromPatientService,
+    );
+
+    const { statusCode, body } = await getAppointmentsController.handle(
       req,
       res,
     );

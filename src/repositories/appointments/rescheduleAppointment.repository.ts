@@ -1,25 +1,28 @@
 import { DataAppointmentDTO } from "../../types/appointments/appointmentDTO.types";
-import { ICreateAppointmentRepository } from "../../interfaces/repositories/appointments/createAppointment.interface";
+
 import { Knex } from "knex";
 
 import { DatabaseSingleton } from "../../infra/database/databaseSingleton";
+import { IRescheduleAppointmentRepository } from "../../interfaces/repositories/appointments/rescheduleAppointment.interface";
 
 const knexInstance: Knex = DatabaseSingleton.getInstance();
-export class CreateAppointmentRepository
-  implements ICreateAppointmentRepository
+export class RescheduleAppointmentRepository
+  implements IRescheduleAppointmentRepository
 {
-  async createAppointment(
+  async rescheduleAppointment(
+    id: number,
     dataAppointment: DataAppointmentDTO,
   ): Promise<DataAppointmentDTO> {
-    const appointmentCreated: DataAppointmentDTO = await knexInstance(
+    const appointmentRescheduled: DataAppointmentDTO = await knexInstance(
       "agendamentos",
     )
-      .insert({
+      .update({
         ...dataAppointment,
       })
+      .where({ id })
       .returning("*")
       .then((result: DataAppointmentDTO[]) => result[0]);
 
-    return appointmentCreated;
+    return appointmentRescheduled;
   }
 }
