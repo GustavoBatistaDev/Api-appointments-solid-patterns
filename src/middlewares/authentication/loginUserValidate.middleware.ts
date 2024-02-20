@@ -28,6 +28,7 @@ export class LoginUserValidatorMiddleware {
         if (!user?.ativo) {
           return res.status(400).json({
             message: "Você precisa verificar seu email antes de fazer login.",
+            error: "unverified_email"
           });
         }
         const userAuthenticated: null | User =

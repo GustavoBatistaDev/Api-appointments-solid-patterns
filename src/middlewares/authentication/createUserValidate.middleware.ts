@@ -35,10 +35,7 @@ export class CreateUserValidatorMiddleware {
   ): Promise<ValidationResult> => {
     try {
       const emailOrCpfExists: boolean =
-        await this.getUserService.getUserByCpfOrEmail(
-          req.body.cpf,
-          req.body.email,
-        );
+        await this.getUserService.getUserByCpfOrEmail("", req.body.email);
 
       if (emailOrCpfExists) {
         return res

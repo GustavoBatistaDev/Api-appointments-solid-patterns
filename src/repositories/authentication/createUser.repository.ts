@@ -13,9 +13,7 @@ export class CreateUserRepository implements ICreateUserRepository {
     const user: User = await knexInstance("pacientes")
       .insert({
         nome: userDTO.nome,
-        ultimo_nome: userDTO.ultimo_nome,
         email: userDTO.email,
-        cpf: userDTO.cpf,
         senha: userDTO.senha,
       })
       .returning("*")

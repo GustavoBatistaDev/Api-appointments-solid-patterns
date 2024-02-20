@@ -1,7 +1,7 @@
 export type IUserDTO = {
   nome: string;
-  ultimo_nome: string;
-  cpf: string;
+  ultimo_nome?: string;
+  cpf?: string;
   email: string;
   foto?: string;
   rg?: string;
