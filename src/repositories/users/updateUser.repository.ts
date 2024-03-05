@@ -1,4 +1,4 @@
-import { User } from "models/authentication/user";
+import { User } from "../../models/authentication/user";
 import { IUpdateUserRepository } from "../../interfaces/repositories/users/updateUserRepository.interface";
 
 import { DatabaseSingleton } from "../../infra/database/databaseSingleton";

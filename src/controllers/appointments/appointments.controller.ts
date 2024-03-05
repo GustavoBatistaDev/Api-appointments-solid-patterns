@@ -1,4 +1,4 @@
-import { IController } from "interfaces/global/controllers/controllerProtocol.interface";
+import { IController } from "../../interfaces/global/controllers/controllerProtocol.interface";
 
 import { Request, Response } from "express";
 
@@ -11,20 +11,18 @@ import { KafkaSendMessage } from "../../infra/providers/kafka/producer";
 import { ICreateAppointmentService } from "../../interfaces/services/appointments/createAppointment.interface";
 import { GetDoctorBySpecialtyService } from "../../services/appointments/getDoctorsBySpecialty.service";
 import { DataAppointmentDTO } from "../../types/appointments/appointmentDTO.types";
-import {
-  IGetAppointmentsFromPatientService,
-  IGetAppointmentsService,
-} from "../../interfaces/services/appointments/getAppointments.interface";
+
 import { formatDate } from "../../utils/formatDate.utils";
 import { parseDateTime } from "../../utils/parseDateTime.utils";
 import { IRescheduleAppointmentService } from "../../interfaces/services/appointments/rescheduleAppointment.interface";
 import { DoctorObject } from "../../types/appointments/doctor.type";
+import { IGetAppointments, IGetAppointmentsFromPatient } from "../../interfaces/repositories/appointments/getAppointments.interface";
 
 export class CreateAppointmentController implements IController {
   constructor(
     private readonly createAppointmentService: ICreateAppointmentService,
     private readonly getDoctorBySpecialtyService: GetDoctorBySpecialtyService,
-    private readonly getAppointmentsService: IGetAppointmentsService,
+    private readonly getAppointmentsService: IGetAppointments,
   ) {}
   public async handle(
     httpRequest: Request,
@@ -84,7 +82,7 @@ export class CreateAppointmentController implements IController {
 export class RescheduleAppointmentController implements IController {
   constructor(
     private readonly rescheduleAppointmentService: IRescheduleAppointmentService,
-    private readonly getAppointmentsService: IGetAppointmentsService,
+    private readonly getAppointmentsService: IGetAppointments,
     private readonly getDoctorBySpecialtyService: GetDoctorBySpecialtyService,
   ) {}
 
@@ -145,11 +143,11 @@ export class RescheduleAppointmentController implements IController {
 
 export class GetAppointmentsController implements IController {
   constructor(
-    private readonly getAppointmentsFromPatientService: IGetAppointmentsFromPatientService,
+    private readonly getAppointmentsFromPatientService: IGetAppointmentsFromPatient,
   ) {}
 
   public async handle(
-    httpRequest: Request,
+    _: Request,
     httpResponse: Response,
   ): Promise<ObjectResponse<unknown>> {
     const appointments =

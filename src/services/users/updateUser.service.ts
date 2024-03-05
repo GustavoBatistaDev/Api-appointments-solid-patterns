@@ -1,4 +1,4 @@
-import { User } from "models/authentication/user";
+import { User } from "../../models/authentication/user";
 
 import { IUpdateUserService } from "../../interfaces/users/updateUser.service";
 import { IUpdateUserRepository } from "../../interfaces/repositories/users/updateUserRepository.interface";

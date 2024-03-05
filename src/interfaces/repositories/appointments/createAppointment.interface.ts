@@ -1,6 +1,6 @@
 import { DataAppointmentDTO } from "../../../types/appointments/appointmentDTO.types";
 
-export interface ICreateAppointmentRepository {
+export interface ICreateAppointment {
   createAppointment(
     dataAppointment: DataAppointmentDTO,
   ): Promise<DataAppointmentDTO>;

@@ -1,14 +1,14 @@
 import { NextFunction, Response } from "express";
-import { Request } from "interfaces/http/httpRequest.interface";
+import { Request } from "../../interfaces/http/httpRequest.interface";
 import { ValidationResult } from "../../types/authentication/authentication.types";
 import { IDecodeTokenService } from "../../interfaces/authentication/decodeToken.interface";
-import { IGetUserByIdService } from "../../interfaces/global/users/getUserById.interface";
+import { IGetUserById } from "../../interfaces/global/users/getUserById.interface";
 import { User } from "../../models/authentication/user";
 
 export class VerifyLoggedUserMiddleware {
   constructor(
     private readonly DecodeTokenService: IDecodeTokenService,
-    private readonly getUserByIdService: IGetUserByIdService,
+    private readonly getUserByIdService: IGetUserById,
   ) {}
   public verifyLoggedUser = async (
     req: Request,

@@ -1,5 +1,5 @@
-import { User } from "models/authentication/user";
+import { User } from "../../../models/authentication/user";
 
-export interface IGetUserByIdService {
+export interface IGetUserById {
   getUser(ìd: number): Promise<User>;
 }

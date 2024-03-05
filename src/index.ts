@@ -1,6 +1,6 @@
 import express from "express";
 import { config } from "dotenv";
-import authRoutes from "./routes/authentication/authentication.routes";
+import authRoutes from "./routes/routes";
 import cors from "cors";
 
 config();

@@ -1,12 +1,12 @@
 import { DataAppointmentDTO } from "../../types/appointments/appointmentDTO.types";
-import { ICreateAppointmentRepository } from "../../interfaces/repositories/appointments/createAppointment.interface";
+import { ICreateAppointment } from "../../interfaces/repositories/appointments/createAppointment.interface";
 import { Knex } from "knex";
 
 import { DatabaseSingleton } from "../../infra/database/databaseSingleton";
 
 const knexInstance: Knex = DatabaseSingleton.getInstance();
 export class CreateAppointmentRepository
-  implements ICreateAppointmentRepository
+  implements ICreateAppointment
 {
   async createAppointment(
     dataAppointment: DataAppointmentDTO,

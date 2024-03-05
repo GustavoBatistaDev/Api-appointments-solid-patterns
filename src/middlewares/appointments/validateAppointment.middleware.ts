@@ -2,14 +2,15 @@ import { Request, Response, NextFunction } from "express";
 import { Schema } from "joi";
 import { ValidationResult } from "../../types/authentication/authentication.types";
 import { ValidationError } from "joi";
-import { IGetAppointmentsService } from "../../interfaces/services/appointments/getAppointments.interface";
+
 import { GetDoctorBySpecialtyService } from "../../services/appointments/getDoctorsBySpecialty.service";
 import { DoctorObject } from "../../types/appointments/doctor.type";
+import { IGetAppointments } from "../../interfaces/repositories/appointments/getAppointments.interface";
 
 export class CreateAppointmentValidatorMiddleware {
   constructor(
     private readonly joiSchema: Schema,
-    private readonly getAppointmentsService: IGetAppointmentsService,
+    private readonly getAppointmentsService: IGetAppointments,
     private readonly getDoctorBySpecialtyService: GetDoctorBySpecialtyService,
   ) {}
 

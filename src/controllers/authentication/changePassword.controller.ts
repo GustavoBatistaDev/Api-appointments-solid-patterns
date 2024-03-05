@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { KafkaSendMessage } from "../../infra/providers/kafka/producer";
-import { IController } from "interfaces/global/controllers/controllerProtocol.interface";
-import { ObjectResponse } from "types/authentication/authentication.types";
+import { IController } from "../../interfaces/global/controllers/controllerProtocol.interface";
+import { ObjectResponse } from "../../types/authentication/authentication.types";
 import { IGetUserService } from "../../interfaces/services/authentication/getUsers.interface";
-import { User } from "models/authentication/user";
+import { User } from "../../models/authentication/user";
 
 export class ChangePassworController implements IController {
   constructor(private readonly getUserService: IGetUserService) {}
@@ -17,7 +17,7 @@ export class ChangePassworController implements IController {
 
     const user = (await this.getUserService.getUserByEmail(email)) as User;
 
-    const pathRecoverPassword = "/change-password/";
+    const pathRecoverPassword = "/alterar-senha/";
     const kafkaProducer = new KafkaSendMessage();
 
     kafkaProducer.execute("notification-email-change-password", {

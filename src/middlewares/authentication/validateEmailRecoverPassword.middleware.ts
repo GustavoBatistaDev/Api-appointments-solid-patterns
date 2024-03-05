@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { IGetUserService } from "interfaces/services/authentication/getUsers.interface";
+import { IGetUserService } from "../../interfaces/services/authentication/getUsers.interface";
 import { Schema } from "joi";
 
 export class ValidateEmailChangePasswordMiddleware {

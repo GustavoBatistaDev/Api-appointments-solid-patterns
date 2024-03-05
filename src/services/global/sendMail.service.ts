@@ -1,4 +1,4 @@
-import { IsendMail } from "interfaces/global/email/sendMail.interface";
+import { IsendMail } from "../../interfaces/global/email/sendMail.interface";
 import nodeMailer from "nodemailer";
 
 export class SendMailService implements IsendMail {

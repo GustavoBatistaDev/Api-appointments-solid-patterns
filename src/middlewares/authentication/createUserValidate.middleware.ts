@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
 import { Schema } from "joi";
-import { ValidationResult } from "types/authentication/authentication.types";
+import { ValidationResult } from "../../types/authentication/authentication.types";
 import { ValidationError } from "joi";
-import { IGetUserService } from "interfaces/services/authentication/getUsers.interface";
+import { IGetUserService } from "../../interfaces/services/authentication/getUsers.interface";
 
 export class CreateUserValidatorMiddleware {
   constructor(

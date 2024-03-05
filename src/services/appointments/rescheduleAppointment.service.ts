@@ -1,6 +1,6 @@
-import { IRescheduleAppointmentService } from "interfaces/services/appointments/rescheduleAppointment.interface";
+import { IRescheduleAppointmentService } from "../../interfaces/services/appointments/rescheduleAppointment.interface";
 import { DataAppointmentDTO } from "../../types/appointments/appointmentDTO.types";
-import { IRescheduleAppointmentRepository } from "interfaces/repositories/appointments/rescheduleAppointment.interface";
+import { IRescheduleAppointmentRepository } from "../../interfaces/repositories/appointments/rescheduleAppointment.interface";
 
 export class RescheduleAppointmentService
   implements IRescheduleAppointmentService

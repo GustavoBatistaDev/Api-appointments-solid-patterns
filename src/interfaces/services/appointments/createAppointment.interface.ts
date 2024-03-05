@@ -1,4 +1,4 @@
-import { ICreateAppointmentRepository } from "../../repositories/appointments/createAppointment.interface";
+import { ICreateAppointment } from "../../repositories/appointments/createAppointment.interface";
 
 export interface ICreateAppointmentService
-  extends ICreateAppointmentRepository {}
+  extends ICreateAppointment {}

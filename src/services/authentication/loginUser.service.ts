@@ -2,7 +2,7 @@ import { ILoginUserRepository } from "../../interfaces/repositories/authenticati
 import { ILoginUserService } from "../../interfaces/authentication/loginUser.interface";
 import { ICreateTokenJwtService } from "../../interfaces/authentication/createToken.interface";
 
-import { User } from "models/authentication/user";
+import { User } from "../../models/authentication/user";
 
 import { payLoadJwt } from "../../types/authentication/payloadJwt.types";
 

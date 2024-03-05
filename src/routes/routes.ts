@@ -1,66 +1,66 @@
 import express from "express";
-import { CreateUserValidatorMiddleware } from "../../middlewares/authentication/createUserValidate.middleware";
-import { registerSchema } from "../../schemas/authentication/register.schema";
-import { CreateUserController } from "../../controllers/authentication/createUser.controller";
-import { CreateUserService } from "../../services/authentication/createUser.service";
-import { CreateUserRepository } from "../../repositories/authentication/createUser.repository";
-import { GetUserService } from "../../services/authentication/getUsers.service";
+import { CreateUserValidatorMiddleware } from "../middlewares/authentication/createUserValidate.middleware";
+import { registerSchema } from "../schemas/authentication/register.schema";
+import { CreateUserController } from "../controllers/authentication/createUser.controller";
+import { CreateUserService } from "../services/authentication/createUser.service";
+import { CreateUserRepository } from "../repositories/authentication/createUser.repository";
+import { GetUserService } from "../services/authentication/getUsers.service";
 import {
   GetUserByIdRepository,
   GetUserRepository,
-} from "../../repositories/authentication/getUsers.repository";
-import { EncryptorPasswordService } from "../../services/authentication/encryptorPassword.service";
+} from "../repositories/authentication/getUsers.repository";
+import { EncryptorPasswordService } from "../services/authentication/encryptorPassword.service";
 
 import { Request, Response } from "express";
-import { CreateTokenJwtService } from "../../services/authentication/createTokenJwt.service";
-import { TwoStepVerificationController } from "../../controllers/authentication/twoStepVerification.controller";
-import { DecodeTokenService } from "../../services/authentication/decodeToken.service";
+import { CreateTokenJwtService } from "../services/authentication/createTokenJwt.service";
+import { TwoStepVerificationController } from "../controllers/authentication/twoStepVerification.controller";
+import { DecodeTokenService } from "../services/authentication/decodeToken.service";
 
-import { ActivateUserService } from "../../services/authentication/activateUser.service";
-import { ActivateUserRepository } from "../../repositories/authentication/activateUser.repository";
-import { LoginUserRepository } from "../../repositories/authentication/loginUser.repository";
-import { LoginUserService } from "../../services/authentication/loginUser.service";
-import { LoginUserController } from "../../controllers/authentication/loginUser.controller";
-import { LoginUserValidatorMiddleware } from "../../middlewares/authentication/loginUserValidate.middleware";
-import { loginSchema } from "../../schemas/authentication/login.schema";
-import { VerifyLoggedUserMiddleware } from "../../middlewares/authentication/verifyLoggedUser.middleware";
-import { GetUserByIdService } from "../../services/global/getUserById.service";
-import { ValidateEmailChangePasswordMiddleware } from "../../middlewares/authentication/validateEmailRecoverPassword.middleware";
-import { recoverPasswordSchema } from "../../schemas/authentication/email.schema";
-import { ChangePassworController } from "../../controllers/authentication/changePassword.controller";
-import { ValidateAlterPasswordMiddleware } from "../../middlewares/authentication/validateAlterPassword.middleware";
-import { UpdatePasswordService } from "../../services/authentication/updatePassword.service";
-import { UpdatePasswordRepository } from "../../repositories/authentication/updatePassword.repository";
-import { AlterPassworController } from "../../controllers/authentication/alterPassword.controller";
-import { ValidateUpdateProfileMiddleware } from "../../middlewares/users/validadeUpdateProfile.middleware";
-import { profileSchema } from "../../schemas/authentication/profile.schema";
-import { UpdateUserRepository } from "../../repositories/users/updateUser.repository";
-import { UpdateUserService } from "../../services/users/updateUser.service";
-import { UpdateProfileController } from "../../controllers/users/updateProfile.controller";
-import { CreateAppointmentValidatorMiddleware } from "../../middlewares/appointments/validateAppointment.middleware";
-import { appointmentSchema } from "../../schemas/authentication/scheduling.schema";
+import { ActivateUserService } from "../services/authentication/activateUser.service";
+import { ActivateUserRepository } from "../repositories/authentication/activateUser.repository";
+import { LoginUserRepository } from "../repositories/authentication/loginUser.repository";
+import { LoginUserService } from "../services/authentication/loginUser.service";
+import { LoginUserController } from "../controllers/authentication/loginUser.controller";
+import { LoginUserValidatorMiddleware } from "../middlewares/authentication/loginUserValidate.middleware";
+import { loginSchema } from "../schemas/authentication/login.schema";
+import { VerifyLoggedUserMiddleware } from "../middlewares/authentication/verifyLoggedUser.middleware";
+import { GetUserByIdService } from "../services/global/getUserById.service";
+import { ValidateEmailChangePasswordMiddleware } from "../middlewares/authentication/validateEmailRecoverPassword.middleware";
+import { recoverPasswordSchema } from "../schemas/authentication/email.schema";
+import { ChangePassworController } from "../controllers/authentication/changePassword.controller";
+import { ValidateAlterPasswordMiddleware } from "../middlewares/authentication/validateAlterPassword.middleware";
+import { UpdatePasswordService } from "../services/authentication/updatePassword.service";
+import { UpdatePasswordRepository } from "../repositories/authentication/updatePassword.repository";
+import { AlterPassworController } from "../controllers/authentication/alterPassword.controller";
+import { ValidateUpdateProfileMiddleware } from "../middlewares/users/validadeUpdateProfile.middleware";
+import { profileSchema } from "../schemas/authentication/profile.schema";
+import { UpdateUserRepository } from "../repositories/users/updateUser.repository";
+import { UpdateUserService } from "../services/users/updateUser.service";
+import { UpdateProfileController } from "../controllers/users/updateProfile.controller";
+import { CreateAppointmentValidatorMiddleware } from "../middlewares/appointments/validateAppointment.middleware";
+import { appointmentSchema } from "../schemas/authentication/scheduling.schema";
 import {
   CreateAppointmentController,
   GetAppointmentsController,
   RescheduleAppointmentController,
-} from "../../controllers/appointments/appointments.controller";
-import { CreateAppointmentService } from "../../services/appointments/createAppointment.service";
-import { CreateAppointmentRepository } from "../../repositories/appointments/createAppointment.repository";
-import { GetDoctorBySpecialtyService } from "../../services/appointments/getDoctorsBySpecialty.service";
-import { GetDoctorBySpecialtyRepository } from "../../repositories/appointments/getDoctorsBySpecialty.repository";
+} from "../controllers/appointments/appointments.controller";
+import { CreateAppointmentService } from "../services/appointments/createAppointment.service";
+import { CreateAppointmentRepository } from "../repositories/appointments/createAppointment.repository";
+import { GetDoctorBySpecialtyService } from "../services/appointments/getDoctorsBySpecialty.service";
+import { GetDoctorBySpecialtyRepository } from "../repositories/appointments/getDoctorsBySpecialty.repository";
 import {
   GetAppointmentsFromPatientService,
   GetAppointmentsService,
-} from "../../services/appointments/getAppointments.service";
+} from "../services/appointments/getAppointments.service";
 import {
   GetAppointmentsFromPatientRepository,
   GetAppointmentsRepository,
-} from "../../repositories/appointments/getAppointments.repository";
-import { ValidateProfileCompletedMiddleware } from "../../middlewares/users/validateProfileCompleted.middleware";
-import { RescheduleAppointmentRepository } from "../../repositories/appointments/rescheduleAppointment.repository";
-import { RescheduleAppointmentService } from "../../services/appointments/rescheduleAppointment.service";
-import multer from "../../multer/multer";
-import { UploadUserPhotoService } from "../../services/upload/upload.services";
+} from "../repositories/appointments/getAppointments.repository";
+import { ValidateProfileCompletedMiddleware } from "../middlewares/users/validateProfileCompleted.middleware";
+import { RescheduleAppointmentRepository } from "../repositories/appointments/rescheduleAppointment.repository";
+import { RescheduleAppointmentService } from "../services/appointments/rescheduleAppointment.service";
+import multer from "../multer/multer";
+import { UploadUserPhotoService } from "../services/upload/upload.services";
 
 const authRouter = express.Router();
 

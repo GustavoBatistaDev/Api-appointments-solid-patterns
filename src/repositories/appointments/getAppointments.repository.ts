@@ -6,13 +6,13 @@ import {
   DataJoinnedAppointment,
 } from "../../types/appointments/appointmentDTO.types";
 import {
-  IGetAppointmentsFromPatientRepository,
-  IGetAppointmentsRepository,
+  IGetAppointmentsFromPatient,
+  IGetAppointments,
 } from "../../interfaces/repositories/appointments/getAppointments.interface";
 
 const knexInstance: Knex = DatabaseSingleton.getInstance();
 
-export class GetAppointmentsRepository implements IGetAppointmentsRepository {
+export class GetAppointmentsRepository implements IGetAppointments {
   public async getAppointmentByHourAndDoctorAndDate(
     day: string,
     hour: string,
@@ -54,7 +54,7 @@ export class GetAppointmentsRepository implements IGetAppointmentsRepository {
 }
 
 export class GetAppointmentsFromPatientRepository
-  implements IGetAppointmentsFromPatientRepository
+  implements IGetAppointmentsFromPatient
 {
   public async getAppointmentsFromPatient(
     pacientId: number,

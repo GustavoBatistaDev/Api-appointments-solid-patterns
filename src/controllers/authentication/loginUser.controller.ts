@@ -1,6 +1,6 @@
 import { ObjectResponse } from "../../types/authentication/authentication.types";
 import { IController } from "../../interfaces/global/controllers/controllerProtocol.interface";
-import { ResponseLogin } from "types/authentication/responseLogin.types";
+import { ResponseLogin } from "../../types/authentication/responseLogin.types";
 
 import { payLoadJwt } from "../../types/authentication/payloadJwt.types";
 

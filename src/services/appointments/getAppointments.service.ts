@@ -1,17 +1,12 @@
 import { DataJoinnedAppointment } from "../../types/appointments/appointmentDTO.types";
+
 import {
-  IGetAppointmentsFromPatientService,
-  IGetAppointmentsService,
-} from "../../interfaces/services/appointments/getAppointments.interface";
-import {
-  IGetAppointmentsFromPatientRepository,
-  IGetAppointmentsRepository,
+  IGetAppointments,
+  IGetAppointmentsFromPatient,
 } from "../../interfaces/repositories/appointments/getAppointments.interface";
 
-export class GetAppointmentsService implements IGetAppointmentsService {
-  constructor(
-    private readonly getAppointmentsRepository: IGetAppointmentsRepository,
-  ) {}
+export class GetAppointmentsService implements IGetAppointments {
+  constructor(private readonly getAppointmentsRepository: IGetAppointments) {}
   public async getAppointmentByHourAndDoctorAndDate(
     day: string,
     hour: string,
@@ -36,10 +31,10 @@ export class GetAppointmentsService implements IGetAppointmentsService {
 }
 
 export class GetAppointmentsFromPatientService
-  implements IGetAppointmentsFromPatientService
+  implements IGetAppointmentsFromPatient
 {
   constructor(
-    private readonly getAppointmentsFromPatientRepository: IGetAppointmentsFromPatientRepository,
+    private readonly getAppointmentsFromPatientRepository: IGetAppointmentsFromPatient,
   ) {}
   public async getAppointmentsFromPatient(
     patientId: number,

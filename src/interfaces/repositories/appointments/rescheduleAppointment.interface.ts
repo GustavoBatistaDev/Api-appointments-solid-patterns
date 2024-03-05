@@ -1,4 +1,4 @@
-import { DataAppointmentDTO } from "types/appointments/appointmentDTO.types";
+import { DataAppointmentDTO } from "../../../types/appointments/appointmentDTO.types";
 
 export interface IRescheduleAppointmentRepository {
   rescheduleAppointment(

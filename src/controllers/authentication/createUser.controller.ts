@@ -1,8 +1,8 @@
-import { IController } from "interfaces/global/controllers/controllerProtocol.interface";
+import { IController } from "../../interfaces/global/controllers/controllerProtocol.interface";
 
-import { ICreateUserService } from "interfaces/services/authentication/ICreateUser.interface";
+import { ICreateUserService } from "../../interfaces/services/authentication/ICreateUser.interface";
 
-import { User } from "models/authentication/user";
+import { User } from "../../models/authentication/user";
 import { Request, Response } from "express";
 import { ObjectResponse } from "../../types/authentication/authentication.types";
 
@@ -37,7 +37,7 @@ export class CreateUserController implements IController {
 
     kafkaProducer.execute("notification-email", {
       email: body.email,
-      url: "/api/verify-email",
+      url: "/verificar/",
       payloadJwt: {
         userId: body.id,
         exp: Math.floor(Date.now() / 1000) + 3600 * 60,

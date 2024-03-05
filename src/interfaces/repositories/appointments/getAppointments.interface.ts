@@ -1,6 +1,6 @@
 import { DataJoinnedAppointment } from "../../../types/appointments/appointmentDTO.types";
 
-export interface IGetAppointmentsRepository {
+export interface IGetAppointments {
   getAppointmentByHourAndDoctorAndDate(
     day: string,
     hour: string,
@@ -10,6 +10,8 @@ export interface IGetAppointmentsRepository {
   getAppointmentById(appointmentId: number): Promise<DataJoinnedAppointment>;
 }
 
-export interface IGetAppointmentsFromPatientRepository {
-  getAppointmentsFromPatient(patientId: number): Promise<DataJoinnedAppointment[]>;
+export interface IGetAppointmentsFromPatient {
+  getAppointmentsFromPatient(
+    patientId: number,
+  ): Promise<DataJoinnedAppointment[]>;
 }

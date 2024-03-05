@@ -1,7 +1,3 @@
-export interface IActivateUserRepository {
-  activateUser(id: number): Promise<void>;
-}
-
-export interface IActivateUserService {
+export interface IActivateUser {
   activateUser(id: number): Promise<void>;
 }

@@ -1,7 +1,7 @@
 import { IGetUserRepository } from "../../interfaces/repositories/authentication/getUsersRepository.interface";
 
-import { User } from "models/authentication/user";
-import { IGetUserByIdRepository } from "interfaces/repositories/users/getUserById.interface";
+import { User } from "../../models/authentication/user";
+import { IGetUserByIdRepository } from "../../interfaces/repositories/users/getUserById.interface";
 import { Knex } from "knex";
 import { DatabaseSingleton } from "../../infra/database/databaseSingleton";
 

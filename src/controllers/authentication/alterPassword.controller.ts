@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
-import { IController } from "interfaces/global/controllers/controllerProtocol.interface";
-import { IUpdatePasswordService } from "interfaces/services/authentication/updatePasswordService.interface";
+import { IController } from "../../interfaces/global/controllers/controllerProtocol.interface";
+import { IUpdatePasswordService } from "../../interfaces/services/authentication/updatePasswordService.interface";
 import { ObjectResponse } from "../../types/authentication/authentication.types";
 import { IEncryptorPasswordService } from "../../interfaces/authentication/encryptorPassword.interface";
 

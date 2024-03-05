@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { IDecodeTokenService } from "../../interfaces/authentication/decodeToken.interface";
 
-import { IGetUserByIdService } from "interfaces/global/users/getUserById.interface";
+import { IGetUserById } from "../../interfaces/global/users/getUserById.interface";
 
 export class ValidateProfileCompletedMiddleware {
   constructor(
     private readonly decodeTokenService: IDecodeTokenService,
-    private readonly getUserById: IGetUserByIdService,
+    private readonly getUserById: IGetUserById,
   ) {}
   public validateUpdateProfile = async (
     req: Request,

@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { IDecodeTokenService } from "interfaces/authentication/decodeToken.interface";
-import { IGetUserByIdService } from "interfaces/global/users/getUserById.interface";
+import { IDecodeTokenService } from "../../interfaces/authentication/decodeToken.interface";
+import { IGetUserById } from "../../interfaces/global/users/getUserById.interface";
 
 export class ValidateAlterPasswordMiddleware {
   constructor(
-    private readonly GetUserByIdService: IGetUserByIdService,
+    private readonly GetUserByIdService: IGetUserById,
     private readonly DecodeTokenService: IDecodeTokenService,
   ) {}
   public validateEmailRecoverPassword = async (

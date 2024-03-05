@@ -1,6 +1,6 @@
 import { ICreateUserRepository } from "../../interfaces/repositories/authentication/createUserRepository.interface";
-import { IUserDTO } from "types/users/userDTO.types";
-import { User } from "models/authentication/user";
+import { IUserDTO } from "../../types/users/userDTO.types";
+import { User } from "../../models/authentication/user";
 import { IEncryptorPasswordService } from "../../interfaces/authentication/encryptorPassword.interface";
 
 export class CreateUserService {
