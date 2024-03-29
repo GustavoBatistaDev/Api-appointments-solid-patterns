@@ -1,8 +1,7 @@
 import { DataAppointmentDTO } from "../../types/appointments/appointmentDTO.types";
 import { ICreateAppointment } from "../../interfaces/repositories/appointments/createAppointment.interface";
-import { ICreateAppointmentService } from "../../interfaces/services/appointments/createAppointment.interface";
 
-export class CreateAppointmentService implements ICreateAppointmentService {
+export class CreateAppointmentService implements ICreateAppointment {
   constructor(
     private readonly createAppointmentRepository: ICreateAppointment,
   ) {}
@@ -11,7 +10,6 @@ export class CreateAppointmentService implements ICreateAppointmentService {
   ): Promise<DataAppointmentDTO> {
     const appointmentCreated =
       await this.createAppointmentRepository.createAppointment(dataAppointment);
-
     return appointmentCreated;
   }
 }

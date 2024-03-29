@@ -38,10 +38,14 @@ export class GetAppointmentsFromPatientService
   ) {}
   public async getAppointmentsFromPatient(
     patientId: number,
+    start: number,
+    limit: number,
   ): Promise<DataJoinnedAppointment[]> {
     const appointments =
       await this.getAppointmentsFromPatientRepository.getAppointmentsFromPatient(
         patientId,
+        start,
+        limit,
       );
     return appointments;
   }

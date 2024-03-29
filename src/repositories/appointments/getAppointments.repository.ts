@@ -58,6 +58,8 @@ export class GetAppointmentsFromPatientRepository
 {
   public async getAppointmentsFromPatient(
     pacientId: number,
+    start?: number,
+    limit?: number,
   ): Promise<DataJoinnedAppointment[]> {
     const appointment: DataJoinnedAppointment[] = await knexInstance(
       "agendamentos",
@@ -76,7 +78,9 @@ export class GetAppointmentsFromPatientRepository
         "=",
         "especialidades.id",
       )
-      .join("pacientes", "agendamentos.pacientes_id", "=", "pacientes.id");
+      .join("pacientes", "agendamentos.pacientes_id", "=", "pacientes.id")
+      .offset(start || 0)
+      .limit(limit || 1000);
 
     return appointment;
   }

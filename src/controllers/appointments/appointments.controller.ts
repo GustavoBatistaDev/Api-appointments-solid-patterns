@@ -16,7 +16,10 @@ import { formatDate } from "../../utils/formatDate.utils";
 import { parseDateTime } from "../../utils/parseDateTime.utils";
 import { IRescheduleAppointmentService } from "../../interfaces/services/appointments/rescheduleAppointment.interface";
 import { DoctorObject } from "../../types/appointments/doctor.type";
-import { IGetAppointments, IGetAppointmentsFromPatient } from "../../interfaces/repositories/appointments/getAppointments.interface";
+import {
+  IGetAppointments,
+  IGetAppointmentsFromPatient,
+} from "../../interfaces/repositories/appointments/getAppointments.interface";
 
 export class CreateAppointmentController implements IController {
   constructor(
@@ -147,12 +150,16 @@ export class GetAppointmentsController implements IController {
   ) {}
 
   public async handle(
-    _: Request,
+    httpRequest: Request,
     httpResponse: Response,
   ): Promise<ObjectResponse<unknown>> {
+    const { limit, start } = httpRequest.query;
+
     const appointments =
       await this.getAppointmentsFromPatientService.getAppointmentsFromPatient(
         httpResponse.locals.user.id,
+        Number(start),
+        Number(limit),
       );
 
     return {

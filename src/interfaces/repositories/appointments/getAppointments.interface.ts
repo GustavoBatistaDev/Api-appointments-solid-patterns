@@ -13,5 +13,7 @@ export interface IGetAppointments {
 export interface IGetAppointmentsFromPatient {
   getAppointmentsFromPatient(
     patientId: number,
+    start?: number,
+    limit?: number,
   ): Promise<DataJoinnedAppointment[]>;
 }
